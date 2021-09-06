@@ -1,0 +1,401 @@
+---
+R Language Course
+Author: Álvaro Robério de Souza Sá 
+Filiation: Universidade Federal de Pernambuco
+Reference: R in Action - Robert I. Kabacoff 
+Repository: 
+---
+
+# CAPTION 01 - Introduction to R - Introdução ao R
+
+# Ciência de Dados (Estatística, Econometria, Matemática e Aprendizado de Dados)
+
+# Etapas de uma análise de dados: 
+
+1) Importação de Dados
+2) Preparação, Exploração e Limpeza dos Dados 
+3) Ajuste do Modelo Estatístico 
+4) Avaliando o Ajuste do Modelo 
+5) Fazendo a Validação Cruzada do Modelo 
+6) Avaliação da Previsão do Modelo em Novos Dados 
+7) Produção de Relatório 
+
+# Por que usar R?
+
+R é uma linguagem e ambiente para computação estatística e gráficos, semelhante à linguagem S originalmente desenvolvida na "Bell Labs". É uma solução de código aberto para análise de dados apoiada 
+por uma grande e ativa comunidade de pesquisa mundial.
+
+# Por que recorrer ao R?
+
+1) Gratuito 
+2) Software Estatístico Abrangente para Análise de Dados
+3) Produção de Gráficos de Alta Qualidade 
+4) Software Poderoso para Análise e Exploração de Dados
+5) Acessa Banco de Dados de Diferentes Formatos e Tipos Facilmente 
+6) Fácil de Programar e Criar Novos Métodos Estatísticos 
+7) Disponibilidade de Rotinas Avançadas 
+8) Curva de Aprendizado Acentuada 
+
+# Trabalhando com R 
+
+1) R é uma linguagem interpretada que diferencia maiúsculas de minúsculas 
+
+2) Inserção de comandos um de cada vez no prompt de comando (>) ou executar um conjunto de comandos de um arquivo de origem 
+
+3) Há uma grande variedade de tipos de dados, incluindo vetores, matrizes, quadros de dados (semelhantes a conjuntos de dados) e listas (coleções de objetos).
+
+4) A maioria das funcionalidades é fornecida por meio de funções internas e criadas pelo usuário, e todos os objetos de dados são mantidos na memória durante uma sessão interativa.
+
+5) As funções básicas estão disponíveis por padrão. Outras funções estão contidas em pacotes que podem ser anexados a uma sessão atual, conforme necessário.
+
+6) As declarações consistem em funções e atribuições. R usa o símbolo (<-) para atribuições, ao invés do típico sinal (=). 
+
+7) Os comentários são precedidos pelo símbolo #. Qualquer texto que apareça após o # é ignorado pelo interpretador de R.
+
+# EXEMPLO: Estudando o desenvolvimento físico e tenha coletado a idade e o peso de 10 bebês no primeiro ano de vida
+
+Age (mo.) = Idade 
+Weight (kg.) = Peso
+
+# Lista de Comando 
+
+q() = Fechar o R 
+c(1,2,3) = Cria um Vetor ou lista de Dados
+mean(var) = Cálcula a Média 
+sd(var) = Cálcula o Desvio Padrão. 
+cor(var1, var2) = Cálcula a Correlação (X,Y)
+plot (var1, Var2) = Plota Gráfico
+
+```{r}
+
+age <- c(1,3,5,2,11,9,3,9,12,3)
+weight <- c(4.4,5.3,7.2,5.2, 8.5,7.3,6.0, 10.4,10.2,6.1)
+
+mean(age)
+mean(weight)
+sd(age)
+sd(weight)
+cor(age, weight)
+plot(age,weight)
+
+# Amostra de Gráficos no R
+demo(graphics)
+
+# Amostra de Termos no R 
+demo(Hershey)
+
+# Gráficos e Figuras em 3D 
+demo(persp)
+
+# Imagens e Gráficos de Calor
+demo(image)
+
+```
+
+
+# Recursos de Ajuda no Ambiente 
+
+Obtendo ajuda R fornece recursos de ajuda abrangentes, e aprender a navegá-los o ajudará significativamente em seus esforços de programação. 
+
+O sistema de ajuda integrado fornece detalhes, referências e exemplos de qualquer função contida em um pacote instalado atualmente.
+
+```{r}
+# Ajuda Geral do R 
+
+help.start()
+
+# Ajuda (Direta e Instância) e Pesquisa sobre função
+
+help("grid")
+help.search("grid")
+RSiteSearch("grid")
+
+# Visualização de exemplo de uso de função
+
+example("grid") 
+
+# Listar todas as funções disponíveis com "grid"
+
+apropos("grid", mode="function")
+
+# Listar todas os conjuntos de dados de exemplo disponíveis nos pacotes carregados
+
+data() 
+
+# Listar todas as vinhetas (guia ou artigos práticos de um pacote - Disponíveis em pDF) disponíveis para os pacotes atualmente instalados 
+
+vignette()
+vignette("grid") 
+
+```
+
+# O Espaço de Trabalho 
+
+O espaço de trabalho é o seu ambiente de trabalho R atual e inclui quaisquer objetos definidos pelo usuário (vetores, matrizes, funções, quadros de dados ou listas). 
+
+No final de uma sessão R, você pode salvar uma imagem do espaço de trabalho atual que é recarregada automaticamente na próxima vez que o R iniciar.
+
+O diretório de trabalho atual é o diretório de onde R lerá os arquivos e salvará os resultados por padrão. Você pode descobrir qual é o diretório de trabalho atual usando a função "getwd ()".
+
+Se você precisar inserir um arquivo que não está no diretório de trabalho atual, use o nome do caminho completo na chamada. Sempre coloque os nomes dos arquivos e diretórios do sistema operacional entre aspas.
+
+```{r}
+# Lista o diretório de trabalho atual 
+
+getwd()
+
+# Mude o diretório de trabalho atual para mydirectory
+
+setwd("mydirectory") 
+
+# Liste os objetos no espaço de trabalho atual
+
+ls()
+
+# Remover (deletar) um ou mais objetos
+
+rm(objectlist)
+
+# Saiba mais sobre as opções disponíveis
+
+help(options) 
+
+# Visualize ou defina as opções atuais.
+
+history(default=25) 
+
+# Salvar e Recarregar o Histórico de Comandos em um arquivo
+
+savehistory("myfile") 
+loadhistory("myfile") 
+
+# Salve objetos específicos em um arquivo.
+
+save.image("myfile")
+
+ #Salvar objetos específicos em um arquivo
+
+save(objectlist, file="myfile") 
+
+# Carregue um espaço de trabalho na sessão atual (padrão = .RData).
+
+load("myfile") 
+
+# Criação de Diretório 
+
+dir.create ( )
+
+```
+
+
+# EXEMPLO: Comandos usados para gerenciar o espaço de trabalho no R 
+
+```{r}
+
+getwd( )
+setwd("E:/Data Rstudio/Biblioteca da Linguagem R/Script Data Science/Curso Básico")
+options( )
+options (digits=3)
+x <- runif (20)
+summary(x)
+grafico <- hist(x) 
+savehistory( )
+save.image( )
+```
+
+# Entrada e Saida (Input and Output)
+
+A função de coletor ("nome do arquivo") redireciona a saída para o nome do arquivo. Por padrão, se o arquivo já existe, seu conteúdo é sobrescrito.  
+
+Inclui a opção: "append = TRUE", para anexar tanto ao arquivo em vez de socrescrevê-lo.
+Inclui a opção: "split = TRUE" enviará a saída para a tela e o arquivo saída. 
+
+# Funções para salvar a saída gráfica
+
+```{r}
+# Ficheiro PDF
+
+
+pdf("grafico.pdf")
+win.metafile("grafico.wmf")
+png("grafico.png")
+jpeg("grafico.jpg")
+bmp("grafico.bmp")
+
+# Suponha que você tenha três arquivos de script contendo código R (script1.R, script2.R e script3.R); Vamos colocar tudo junto. Emitindo a declaração:
+
+source("script1.R")
+
+# Irá enviar o código R do script1.R para a sessão atual e os resultados aparecerão na tela.
+# Se você então emitir as declarações 
+
+sink("myoutput", append=TRUE, split=TRUE)
+
+# O código R do arquivo script2.R será enviado e os resultados aparecerão novamente em
+# a tela. Além disso, a saída de texto será anexada ao arquivo myoutput, e 
+# a saída do gráfica será salva no arquivo mygraphs.pdf. Finalmente, se você emitir as declarações o código R do script3.R será enviado, e os resultados aparecerão na tela.
+
+```
+
+# Pacotes (Packages)
+
+R vem com recursos abrangentes direto da caixa. Mas alguns de seus mais emocionantes
+recursos estão disponíveis como módulos opcionais que você pode baixar e instalar. Lá
+são mais de 2.500 módulos contribuídos por usuários, chamados de pacotes, que você pode baixar em: https://cran.r-project.org/web/packages/.
+
+# O que são pacotes?
+
+Os pacotes são coleções de funções R, dados e código compilado em um formato bem definido. O diretório onde os pacotes são armazenados em seu computador é chamado de biblioteca.
+
+.libPaths () = função que mostra onde sua biblioteca está localizada. 
+library =  mostra quais pacotes você salvou em sua biblioteca.
+
+R vem com um conjunto padrão de pacotes (including base, datasets, utils,
+grDevices, graphics, stats, and methods). 
+
+Eles fornecem uma ampla gama de funções e conjuntos de dados que estão disponíveis por padrão. Outros pacotes estão disponíveis para download e instalação. Depois de instalados, eles devem ser carregados na sessão a fim de ser usado. 
+
+O comando search ( ) informa quais pacotes estão carregados e prontos para usar
+
+
+Eles fornecem uma ampla gama de funções e conjuntos de dados que estão disponíveis por padrão. Outros pacotes estão disponíveis para download e instalação.
+
+Depois de instalados, eles devem ser carregados na sessão a fim de ser usado. O comando search () informa quais pacotes estão carregados e pronto para usar
+
+```{r}
+# Ver Pacotes Carregados
+
+search ( )
+
+# Função que mostra onde sua biblioteca está localizada. 
+
+.libPaths ( )
+
+# Mostra quais pacotes você salvou em sua biblioteca.
+
+library
+
+```
+
+# Instalação de Pacotes no R 
+
+Existem várias funções R que permitem manipular pacotes. Para instalar um pacote pela primeira vez, use o comando install.packages (). Por exemplo, install.packages () sem opções traz uma lista de sites espelho CRAN. Uma vez que você selecione um site, você verá uma lista de todos os pacotes disponíveis. 
+
+Selecionar um irá baixe e instale-o. Se você souber qual pacote deseja instalar, poderá fazê-lo diretamente,
+fornecendo-o como um argumento para a função.
+
+```{r}
+
+# Lista de sites com espelho CRAN (pacotes do R)
+
+install.packages ( ) 
+
+# Instalação do Pacote "gclus" de gráficos de dispersão aprimorados 
+
+install.packages ('tidyverse')
+library(tidyverse)
+
+install.packages('gclus')
+library(gclus)
+
+# Atualização de pacote já instalado 
+
+update.packages('gclus')
+
+# Resolução do Problema de Identificação da Biblioteca do Rstudio
+
+getwd ( )
+.libPaths ("C:/Program Files/R/R-4.1.1/library")
+.libPaths ( )
+
+```
+
+# Aprendendo sobre um pacote
+
+```{r}
+
+# Explicação de uso dos pacotes 
+
+library(grid)
+help(grid)
+
+```
+
+# Usando saída como entrada - reutilizando resultados
+
+Um dos recursos de design mais úteis do R é que a saída das análises pode ser facilmente
+salvo e usado como entrada para análises adicionais.
+
+Primeiro, execute uma regressão linear simples prevendo milhas por galão (mpg) a partir do peso do carro
+(wt), usando o conjunto de dados automotivo mtcars.
+
+```{r}
+# Regressão Linear Simples 
+
+lm(mpg~wt, data=mtcars)
+
+# Em seguida, execute a regressão, mas armazene os resultados em um objeto:
+
+lmfit <- lm(mpg~wt, data=mtcars)
+summary(lmfit)
+plot (lmfit)
+
+# A instrução cook <-cooks.distance (lmfit) gera estatísticas de influência e as representa graficamente.
+
+cook<-cooks.distance(lmfit)
+
+plot(cook) 
+summary(lmfit)
+plot (lmfit)
+
+help(lm)
+
+# Para prever milhas por galão de carro peso em um novo conjunto de dados, você usaria a previsão (lmfit, mynewdata).
+
+```
+
+# Trabalhar com grandes conjuntos de dados
+
+Trabalhando com grandes conjuntos de dados Os programadores freqüentemente me perguntam se R pode lidar com grandes problemas de dados. Mas há duas questões a serem consideradas: o tamanho do conjunto de dados e os métodos estatísticos que serão aplicados.
+
+# Trabalhando com um exemplo
+
+
+```{r}
+
+# 1 Abra a ajuda geral e veja a seção “Introdução ao R”
+
+help.start( )
+
+# 2 Instale o pacote vcd (um pacote para visualizar dados categóricos).
+
+install.packages('vcd')
+
+# 3 Liste as funções e conjuntos de dados disponíveis neste pacote
+
+help(package="vcd")
+
+# 4 Carregue o pacote e leia a descrição do conjunto de dados Arthritise.
+
+library(vcd)
+help(Arthritis)
+
+# 5 Imprima o conjunto de dados de artrite (inserir o nome de um objeto irá listá-lo).
+
+Arthritis
+
+# 6 Execute o exemplo que acompanha o conjunto de dados da artrite. 
+
+# *** Não se preocupe se você não entender os resultados. Basicamente, mostra que os pacientes com artrite que receberam tratamento melhoraram muito mais do que os pacientes que receberam um placebo.
+
+example("Arthritis")
+
+```
+
+# Conclusão
+
+Neste capítulo, vimos alguns dos pontos fortes que tornam R uma opção atraente para estudantes, pesquisadores, estatísticos e analistas de dados que tentam compreender o significado de seus dados. Percorremos a instalação do programa e falamos sobre como aprimorar os recursos do R baixando pacotes adicionais. Exploramos a interface básica, executando programas interativamente e em lotes, e produzimos alguns gráficos de amostra. 
+
+Você também aprendeu como salvar seu trabalho em arquivos de texto e gráficos. Como R pode ser um programa complexo, passamos algum tempo analisando como acessar a ampla ajuda disponível.
+
+
