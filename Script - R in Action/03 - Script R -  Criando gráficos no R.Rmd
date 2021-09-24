@@ -1,0 +1,728 @@
+---
+R Language Course
+Author: Álvaro Robério de Souza Sá 
+Filiation: Universidade Federal de Pernambuco
+Reference: R in Action - Robert I. Kabacoff 
+Repository: 
+---
+
+# CAPTION 03  - Getting started with graphs - Introdução a criação de gráficos no R 
+
+Muitas vezes fui capaz de ver padrões nos dados ou detectar anomalias nos valores dos dados olhando os gráficos - padrões ou anomalias que eu perdi completamente ao conduzir análises estatísticas mais formais.
+
+Os seres humanos são notavelmente hábeis em discernir relacionamentos a partir de representações visuais. Um gráfico bem elaborado pode ajudá-lo a fazer comparações significativas entre milhares de informações, extraindo padrões que não são facilmente encontrados por outros métodos.Esta é uma das razões pelas quais os avanços no campo dos gráficos estatísticos tiveram um impacto tão importante na análise de dados.
+
+Os analistas de dados precisam examinar seus dados, e essa é uma área em que R se destaca. Neste capítulo, revisaremos os métodos gerais para trabalhar com gráficos.
+
+# Trabalhando com gráficos
+
+R é uma plataforma incrível para construir gráficos. Estou usando o termo "construção" intencionalmente. Em uma sessão interativa típica, você constrói um gráfico com uma instrução de cada vez, adicionando recursos, até obter o que deseja.
+
+# Outro gráficos de pré-análise
+
+A criação de um novo gráfico emitindo um comando de plotagem de alto nível, como plot (), hist () (para histogramas) ou boxplot (), geralmente sobrescreverá um gráfico anterior. 
+
+Como você pode criar mais de um gráfico e ainda ter acesso a cada um? Existem vários métodos.
+
+Antes disso, vamos falar sobre o "Histograma" e  "BoxPlot". 
+
+# Histograma 
+
+Um histograma é uma espécie de gráfico de barras que demonstra uma distribuição de frequências. 
+
+# Boxplot 
+
+O Boxplot ou box plot é um diagrama de caixa construído utilizando as referências de valores mínimos e máximos, primeiro e terceiro quartil, mediana e outliers da base de dados. 
+
+# Primeiro, você pode abrir uma nova janela de gráfico antes de criar um novo gráfico
+
+dev.new()
+statements to create graph 1
+
+dev.new() 
+statements to create a graph 2
+
+Em seguida, use os itens de menu Anterior e Próximo para percorrer os gráficos criados. 
+
+Em terceiro e último lugar, você pode usar as funções dev.new (), dev.next (), dev.prev (), dev.set () e dev.off () para ter várias janelas de gráfico abertas ao mesmo tempo e escolher quais saídas são enviadas para quais janelas. 
+
+Essa abordagem funciona em qualquer plataforma. Veja help (dev.cur) para detalhes sobre esta abordagem.
+
+R criará gráficos atraentes com um mínimo de entrada de nossa parte. Mas você também pode usar parâmetros gráficos para especificar fontes (fonts), cores (colors), estilos de linha (line styles), eixos (axes), linhas de referência (reference lines) e anotações (annotations). Essa flexibilidade permite um amplo grau de personalização.
+
+# Outras Informações 
+
+Neste capítulo, começaremos com um gráfico simples e exploraremos as maneiras de modificá-lo e aprimorá-lo para atender às suas necessidades. Em seguida, veremos exemplos mais complexos que ilustram métodos de personalização adicionais. O foco estará nas técnicas que você pode aplicar a uma ampla gama de gráficos que você criará em R.
+
+Ademais, o pacote "lattice", que será visto mais adiante no curso, tem seus próprios métodos para personalizar a aparência de um gráfico.
+
+```{r}
+
+# Construindo gráfico (rodar todo código)
+
+getwd ( )
+.libPaths ("C:/Program Files/R/R-4.1.1/library")
+install.packages("RODBC")
+
+attach(mtcars)
+plot(wt, mpg)
+abline(lm(mpg ~ wt))
+title("Regression of MPG on Weight")
+detach(mtcars)
+
+# Salvando gráfico em formato PDF (rodar todo código)
+
+pdf("grafico.pdf")
+attach(mtcars)
+plot(wt, mpg)
+abline(lm(mpg ~ wt))
+title("Regression of MPG on Weight")
+detach(mtcars)
+
+# Além de pdf (), você pode usar as funções win.metafile (), png (), jpeg (), bmp (), tiff (), xfig () e postscript () para salvar gráficos em outros formatos. 
+
+# Construindo um histograma 
+
+attach(mtcars)
+hist(wt)
+detach(mtcars)
+
+# Construindo u BoxPlot 
+
+attach(mtcars)
+boxplot(wt)
+detach(mtcars)
+
+1) Outlier
+2) Máximo
+3) Terceiro Quartil (Q3)
+4) Mediana 
+5) Primeiro Quartil (Q1)
+6) Mínimo 
+
+```
+
+# Um exemplos simples de gráfico 
+
+Vamos começar com um conjunto de dados fictício simples. Eles descrevem a resposta dos pacientes a dois medicamentos em cinco níveis de dosagem.
+
+plot () é uma função genérica que plota objetos em R (sua saída irá variar de acordo com o tipo de objeto sendo plotado). 
+
+Nesse caso, plotar (x, y, tipo = "b") coloca x no eixo horizontal e y no eixo vertical, plota os pontos de dados (x, y) e os conecta com segmentos de linha. 
+
+```{r}
+
+# Exemplo de gráfico, com dados fictício simples 
+
+# Criando conjunto de dados
+
+dose <- c(20, 30, 40, 45, 60)
+drugA <- c(16, 20, 27, 40, 60)
+drugB <- c(15, 18, 25, 31, 40)
+
+# Criando gráfico 
+
+help (plot)
+
+plot (dose, drugA, type="p")
+plot (dose, drugA, type="l")
+plot (dose, drugA, type="b")
+plot (dose, drugA, type="c")
+plot (dose, drugA, type="o")
+plot (dose, drugA, type="h")
+plot (dose, drugA, type="s")
+plot (dose, drugA, type="S")
+plot (dose, drugA, type="n")
+
+# Lista de tipo de gráficos com a função plot
+
+"p" para pontos,
+"l" para linhas,
+"b" para ambos,
+"c" para as linhas apenas parte de "b",
+"o" para ambos 'overplotted',
+"h" para ‘histograma’ como (ou ‘alta densidade’) linhas verticais,
+"s" para degraus de escada,
+"S" para outras etapas, consulte ‘Detalhes’ abaixo,
+"n" para nenhuma plotagem.
+
+```
+
+# Parâmetros Gráficos 
+
+Você pode personalizar muitos recursos de um gráfico (fontes, cores, eixos, títulos) por meio de opções chamadas de parâmetros gráficos. 
+
+Uma maneira é especificar essas opções por meio da função par (). Os valores definidos desta maneira terão efeito pelo resto da sessão ou até que sejam alterados.
+
+Especificar par () sem parâmetros produz uma lista das configurações gráficas atuais. 
+
+Adicionar a opção no.readonly = TRUE produz uma lista das configurações gráficas atuais que podem ser modificadas.
+
+# Lista de símbolos e parâmetros 
+
+pch =  Especifica o símbolo a usar ao traçar pontos (0 a 25).
+
+cex =  Especifica o tamanho do símbolo.
+
+cex é um número que indica a quantidade pela qual os símbolos de plotagem devem ser escalados em relação ao padrão. 1 = padrão, 1,5 é 50% maior, 0,5 é 50% menor e assim por diante.
+
+lty = Especifica o tipo de linha.
+
+lwd = Especifica a largura da linha. lwd é expresso em relação ao padrão (padrão = 1). 
+
+Por exemplo, lwd = 2 gera uma linha com o dobro da largura do padrão.
+
+# Lista de parâmetros para cor 
+
+col = Cor de plotagem padrão. Algumas funções (como linhas e pizza) aceitam um vetor de valores que são reciclados. 
+
+Por exemplo, se col = c (“red”, “blue”) e três linhas são plotadas, a primeira linha será vermelha, a segunda azul e o
+terceiro vermelho. 
+
+col.axis = Cor do texto do eixo.
+
+col.lab = Cor para rótulos de eixo.
+
+col.main = Cor para títulos.
+
+col.sub = Cor para legendas.
+
+fg = A cor do primeiro plano do enredo.
+
+bg = A cor de fundo do enredo.
+
+Isso inclui rainbow(), heat.colors(), terrain.colors(), topo.colors(), e  cm.colors().
+
+Por exemplo, rainbow(10) produz 10 cores "arco-íris" contíguas. Os níveis de cinza são gerados com a função gray(). Nesse caso, você especifica os níveis de cinza como um vetor de números entre 0 e 1. cinza (0: 10 /10).
+
+```{r}
+
+# Criando e Alterando parâmetros gráficos
+
+opar <- par (no.readonly = TRUE)
+par(lty=3, pch=19)
+plot(dose, drugA, type="b")
+
+opar <- par(no.readonly = TRUE)
+par(lty=2, pch=17)
+plot(dose, drugA, type="b")
+
+# lty (tipo de linha) e pch (símbolos)
+
+# Plotagem com função de alto nível 
+
+plot(dose, drugA, type="b", lty=2, pch=17)
+
+# Observação esses parâmetros podem variar de função para função, ou seja, os parâmetros serão diferentes em hist () e boxplot (). 
+
+# Novas opções de design na plotagem 
+
+plot(dose, drugA, type="b", lty=4, lwd=3, pch=15, cex=2)
+
+plot(dose, drugA, type="b", lty=4, lwd=3, pch=15, cex=2, col=7)
+
+# Criando tabela de cores 
+
+n <- 10
+mycolors <- rainbow(n)
+pie(rep(1, n), labels=mycolors, col=mycolors)
+
+mygrays <- gray(0:n/n)
+pie(rep(1, n), labels=mygrays, col=mygrays)
+```
+
+# Características do texto 
+
+cex = Número que indica a quantidade pela qual o texto plotado deve ser escalado em relação para o padrão. 1 = padrão, 1,5 é 50% maior, 0,5 é 50% menor, etc.
+
+cex.axis = Ampliação do texto do eixo em relação ao cex.
+cex.lab = Ampliação dos rótulos dos eixos em relação ao cex.
+cex.main = Ampliação de títulos em relação ao cex.
+cex.sub = Ampliação das legendas em relação ao cex 
+
+Parâmetros que especificam a família, tamanho e estilo da fonte
+
+font =  Número inteiro que especifica a fonte a ser usada para texto plotado. 1 = plain (simples), 2 = bold (negrito), 3 = italic (itálico), 4 = bold italic (negrito itálico), 5 = símbolo (na codificação de símbolo Adobe).
+
+font.axis = Fonte para o texto do eixo.
+
+font.lab = Fonte para rótulos de eixo.
+
+font.main = Fonte para títulos.
+
+font.sub = Fonte para legendas.
+
+ps = Tamanho do ponto da fonte (roughly 1/72 inch | aproximadamente 1/72 polegada). O tamanho do texto = ps*cex.
+
+family = Família de fontes para desenho de texto. Os valores padrão são serif, sans e mono.
+
+Para PDFs, use nomes (pdfFonts ()) para descobrir quais fontes estão disponíveis em seu sistema e pdf (file = "myplot.pdf", family = "fontname") para gerar os gráficos. Para gráficos que são produzidos no formato PostScript, use nomes (postscriptFonts ()) e postscript (arquivo = "myplot.ps", family = "fontname"). Consulte a ajuda online para obter mais informações.
+
+
+# Dimensões do gráfico e da margem
+
+Finalmente, você pode controlar as dimensões do gráfico e os tamanhos das margens usando os parâmetros listados na tabela.
+
+pin = Dimensões do gráfico (largura, altura) - (width, height) - em polegadas.
+
+mai = Vetor numérico que indica o tamanho da margem onde c(inferior, esquerda, superior, direita) - c(bottom, left, top, right) - é expresso em polegadas.
+
+mar = Vetor numérico que indica o tamanho da margem onde c (inferior, esquerda, superior, direita) - c(bottom, left, top, right) - é expresso em linhas. O padrão é c (5, 4, 4, 2) 0,1. 
+
+
+```{r}
+
+# Exemplo de como editar as características e dimensões dos textos
+
+dose <- c(20, 30, 40, 45, 60)
+drugA <- c(16, 20, 27, 40, 60)
+drugB <- c(15, 18, 25, 31, 40)
+
+# Definição dos parametros do gráfico 
+
+opar <- par(no.readonly=TRUE)
+
+# Definindo os parametros de dimensão do gráfico 
+
+par(pin=c(2, 3))
+
+# Definindo largura da linha e escala do texto do gráfico 
+
+par(lwd=2, cex=1.5)
+
+# Definição a ampliação do texto "CEX" e fonte do eixo do gráfico
+
+par(cex.axis=.75, font.axis=3)
+
+# Plotando o gráfico - pch = Simbolos, lty = linha, col= cor 
+
+plot(dose, drugA, type="b", pch=19, lty=2, col="red")
+
+# Plotando outro gráfico 
+
+plot(dose, drugB, type="b", pch=23, lty=6, col="blue", bg="green")
+par(opar)
+
+# Executando todo o código para produção do gráfico
+
+help (par)
+
+dose <- c(20, 30, 40, 45, 60)
+drugA <- c(16, 20, 27, 40, 60)
+drugB <- c(15, 18, 25, 31, 40)
+opar <- par(no.readonly=TRUE)
+par(pin=c(2, 3))
+par(lwd=2, cex=1.5)
+par(cex.axis=.75, font.axis=3)
+plot(dose, drugA, type="b", pch=19, lty=2, col="red")
+plot(dose, drugB, type="b", pch=23, lty=6, col="blue", bg="green")
+par(opar)
+
+```
+
+# Adicionar texto, eixos personalizados e legendas
+
+Muitas funções de plotagem de alto nível (por exemplo, plot, hist, boxplot) permitem incluir opções de eixo e texto, bem como parâmetros gráficos. Por exemplo, o seguinte adiciona um título (main), subtítulo (sub), rótulos de eixo (xlab, ylab) e intervalos de eixo (xlim, ylim). 
+
+Novamente, nem todas as funções permitem que você adicione essas opções. Consulte a ajuda da função de interesse para ver quais opções são aceitas. Para um controle mais preciso e para modularização, você pode usar as funções descritas no restante desta seção para controlar títulos, eixos, legendas e anotações de texto.
+
+```{r}
+
+# Alterando os principais parâmetros gráficos 
+
+plot(dose, drugA, type="b",
+ col="red", lty=2, pch=2, lwd=2,
+ main="Clinical Trials for Drug A",
+ sub="This is hypothetical data",
+ xlab="Dosage", ylab="Drug Response",
+ xlim=c(0, 60), ylim=c(0, 70))
+
+```
+# Alterações no título 
+
+Use a função title () para adicionar rótulos de título e eixo a um gráfico. O formato é: 
+
+title(main="main title", sub="sub-title", xlab="x-axis label", ylab="y-axis label")
+
+Parâmetros gráficos (como tamanho do texto, fonte, rotação e cor) também podem ser especificados na função title (). 
+
+Por exemplo, o seguinte produz um título vermelho e um legenda azeul e cria rótulos verdes x e y 25% menores que o padrão do tamanho do texto. 
+
+title(main="My Title", col.main="red", sub="My Sub-title", col.sub="blue", xlab="My X label", ylab="My Y label", col.lab="green", cex.lab=0.75)
+
+# Axes 
+
+Em vez de usar os eixos padrão de R, você pode criar eixos personalizados com a função axis (). O formato é: 
+
+axis(side, at=, labels=, pos=, lty=, col=, las=, tck=, ...)
+
+Ao criar um eixo personalizado, você deve suprimir o eixo gerado automaticamente por
+a função de plotagem de alto nível. A opção axis= FALSE suprime todos os eixos (incluindo todas as linhas do quadro do eixo, a menos que você adicione a opção frame.plot = TRUE).
+
+As opções xaxt = ”n” e yaxt = ”n” suprimem os eixos x e y, respectivamente (deixando as linhas do quadro, sem tiques).
+
+A lista a seguir é um exemplo um tanto bobo e exagerado que demonstra cada um dos recursos que discutimos até agora.
+
+side = Um número inteiro indicando o lado do gráfico para desenhar o eixo (1=bottom, 2=left, 3=top, 4=right).
+
+at = Um vetor numérico que indica onde as marcas de escala devem ser desenhadas.
+
+labels =  Um vetor de caracteres de rótulos a serem colocados nas marcas de escala (se NULL, os valores at serão usados).
+
+pos = A coordenada na qual a linha do eixo deve ser desenhada
+(ou seja, o valor no outro eixo onde ele cruza).
+
+lty = Tipo de linha.
+
+col = A linha e a cor da marca de seleção.
+
+las = Os rótulos são paralelos (= 0) ou perpendiculares (= 2) ao eixo.
+
+tck = Comprimento da marca de escala como uma fração da região de plotagem (um número negativo está fora do gráfico, um número positivo está dentro, 0 suprime as marcas, 1 cria linhas de grade); o padrão é –0,01.
+
+
+```{r}
+
+# Um exemplo de eixos personalizados
+
+x <- c(1:10)
+y <- x 
+z <- 10/x 
+
+opar <- par(no.readonly = TRUE)
+
+par(mar=c(5, 4, 4, 8) + 0.1)
+
+plot(x, y, type="b", pch=21, col="red",
+     yaxt="n", lty=3, ann=FALSE)
+
+lines(x, z, type="b", pch=22, col="blue", lty=2)
+
+axis(4, at=z, labels = round (z, digits=2),
+     col.axis = "blue", las=2, cex.axis = 0.7,
+     tck= -.01)
+
+title("Exemplo de criação de Axes",
+      xlab="Valor de X",
+      ylab = "Y=X")
+
+par(opar)
+
+```
+
+# Minor tick marks (marcas secundárias)
+
+```{r}
+
+install.packages('Hmisc')
+library(Hmisc)
+
+minor.tick(nx=n, ny=n, tick.ratio=n)
+```
+
+onde nx e ny especificam o número de intervalos nos quais dividir a área entre as marcas de escala principais nos eixos x e y, respectivamente.
+
+tick.ratio é o tamanho da marca menor em relação à marca maior. O comprimento atual da marca de escala principal pode ser recuperado usando par ("tck"). 
+
+Por exemplo, a seguinte instrução adicionará uma marca de verificação entre cada marca de verificação principal no eixo x e duas marcas de verificação entre cada marca de verificação principal no eixo y:
+
+minor.tick(nx=2, ny=3, tick.ratio=0.5)
+
+# Linha de Referência 
+
+A função abline () é usada para adicionar linhas de referência ao nosso gráfico. O formato é:
+
+abline(h=yvalues, v=xvalues)
+
+Outros parâmetros gráficos (como tipo de linha, cor e largura) também podem ser especificados na função abline (). Por exemplo:
+
+abline(h=c(1,5,7))
+
+adiciona linhas horizontais sólidas em y = 1, 5 e 7, enquanto o código abline (v = seq (1, 10, 2), lty = 2, col = "blue") adiciona linhas verticais azuis tracejadas em x = 1, 3, 5, 7 e 9.
+
+
+# Legenda 
+
+Quando mais de um conjunto de dados ou grupo é incorporado em um gráfico, uma legenda pode ajudá-lo a identificar o que está sendo representado por cada barra, fatia de pizza ou linha. 
+
+Uma legenda pode ser adicionada (não surpreendentemente) com a função legend ().
+
+legend(location, title, legend, ...)
+
+a) location 
+
+Existem várias maneiras de indicar a localização da legenda. Você pode fornecer uma coordenada x, y para o canto superior esquerdo da legenda. Você pode usar o locator (1) e, nesse caso, usar o mouse para indicar a localização da legenda. Você também pode usar as palavras-chave bottom, bottomleft, left, topleft, top, topright, right, bottomright ou center para colocar a legenda no gráfico. Se você usar uma dessas palavras-chave, também pode usar inset = to para especificar uma quantidade para mover a legenda para o gráfico (como fração da região do gráfico).
+
+b) title
+
+Uma sequência de caracteres para o título da legenda (opcional).
+
+c) legend 
+
+Um vetor de caracteres com os rótulos. Outras opções. 
+
+Se a legenda rotular linhas coloridas, especifique col = e um vetor de cores. 
+
+Se a legenda rotular os símbolos de ponto, especifique pch = e um vetor de símbolos de ponto.
+
+Se a legenda rotular largura ou estilo de linha, use lwd = ou lty = e um vetor de larguras ou estilos. 
+
+Para criar caixas coloridas para a legenda (comum em gráficos de barras, caixas ou setores circulares), use fill = e um vetor de cores.
+
+Outras opções de legenda comuns incluem bty para tipo de caixa, bg para cor de fundo, cex para tamanho e text.col para cor de texto.
+
+Especificar horiz = TRUE define a legenda horizontalmente em vez de verticalmente. 
+
+Para mais informações sobre as legendas, consulte a ajuda help(legend). 
+
+Os exemplos no arquivo de ajuda são particularmente informativos. Vamos dar uma olhada em um exemplo usando nossos dados de medicamentos (listagem 3.3). 
+
+Novamente, você usará uma série de recursos que abordamos até este ponto. 
+
+
+```{r}
+
+# Exemplo de gráfico, com recursos visuais
+
+library(Hmisc)
+
+dose <- c(20, 30, 40, 45, 60)
+drugA <- c(16, 20, 27, 40, 60)
+drugB <- c(15, 18, 25, 31, 40)
+
+opar <- par(no.readonly=TRUE)
+
+# Aumentar linha, texto, símbolo, tamanho da etiqueta
+
+par(lwd=2, cex=1.5, font.lab=2)
+
+# Gerar gráfico
+
+plot(dose, drugA, type="b",
+ pch=15, lty=1, col="red", ylim=c(0, 60),
+ main="Drug A vs. Drug B",
+ xlab="Drug Dosage", ylab="Drug Response")
+
+lines(dose, drugB, type="b", pch=17, lty=2, col="blue")
+
+abline(h=c(30), lwd=1.5, lty=2, col="gray")
+
+minor.tick(nx=3, ny=3, tick.ratio=0.5)
+
+legend("topleft", inset=.05, title="Drug Type", c("A","B"), lty=c(1, 2), pch=c(15, 17), col=c("red", "blue"))
+par(opar)
+
+```
+
+
+# Anotações de texto
+
+O texto pode ser adicionado aos gráficos usando as funções text () e mtext ().
+
+text () coloca o texto dentro do gráfico, enquanto mtext () coloca o texto em uma das quatro margens. Os formatos são:
+
+text(location, "text to place", pos, ...)
+
+mtext("text to place", side, line=n, ...)
+
+a) location
+
+A localização pode ser uma coordenada x, y. Alternativamente, o texto pode ser colocado interativamente por meio do mouse, especificando a localização como locator (1).
+
+b) pos
+
+Posição em relação ao local. 1 = abaixo (below), 2 = esquerda (left), 3 = acima (above), 4 = direita (right).
+
+Se você especificar pos, você pode especificar offset = em porcentagem da largura do caractere.
+
+c) side
+
+Em qual margem colocar o texto, onde 1 = inferior (bottom), 2 = esquerda (left), 3 = superior (top), 4 = direita (right).
+
+Você pode especificar line = para indicar a linha na margem começando com 0 (mais próximo para a área do lote) e saindo.
+
+Você também pode especificar adj = 0 para esquerda / inferior alinhamento ou adj = 1 para alinhamento superior / direito.
+
+d) Outras características
+
+Outras opções comuns são cex, col e font (para tamanho, cor e estilo de fonte, respectivamente).
+
+A função text () é normalmente usada para rotular pontos, bem como para adicionar outras anotações de texto. 
+
+Especifique a localização como um conjunto de coordenadas x, y e especifique o texto a ser colocado como um vetor de rótulos. Os vetores x, y e rótulo devem ter o mesmo comprimento.
+
+
+```{r}
+
+# Exemplo de gráfico com anotações de texto
+
+attach(mtcars)
+plot(wt, mpg,
+ main="Mileage vs. Car Weight",
+ xlab="Weight", ylab="Mileage",
+ pch=18, col="blue")
+text(wt, mpg,
+ row.names(mtcars),
+ cex=0.6, pos=4, col="red")
+detach(mtcars)
+
+opar <- par(no.readonly=TRUE)
+par(cex=1.5)
+plot(1:7,1:7,type="n")
+text(3,3,"Example of default text")
+text(4,4,family="mono","Example of mono-spaced text")
+text(5,5,family="serif","Example of serif text")
+par(opar)
+
+```
+
+Aqui, traçamos a quilometragem do carro em relação ao peso do carro para as 32 marcas de automóveis fornecidas no data frame do mtcars. 
+
+A função text () é usada para adicionar as marcas do carro à direita de cada ponto de dados. 
+
+Os rótulos de pontos são reduzidos em 40 por cento e apresentados em vermelho. Como um segundo exemplo, o código a seguir pode ser usado para exibir famílias de fontes:
+
+```{r}
+
+# Adicionando o texto no gráfico 
+
+opar <- par(no.readonly=TRUE)
+par(cex=1.5)
+plot(1:7,1:7,type="n")
+text(3,3,"Example of default text")
+text(4,4,family="mono","Example of mono-spaced text")
+text(5,5,family="serif","Example of serif text")
+par(opar)
+
+demo (plotmath)
+
+```
+
+# Anotações matemáticas 
+
+Finalmente, você pode adicionar símbolos matemáticos e fórmulas a um gráfico usando regras do tipo TEX. Veja a ajuda help(plotmath) para detalhes e exemplos.
+
+Você também pode tentar demo (plotmath) para ver isso em ação.
+
+A função plotmath () pode ser usada para adicionar símbolos matemáticos a títulos, rótulos de eixos ou anotações de texto no corpo ou nas margens do gráfico.
+
+# Combinando gráficos
+
+R torna fácil combinar vários gráficos em um gráfico geral, usando a função par () ou layout (). Neste ponto, não se preocupe com os tipos específicos de gráficos sendo combinados; nosso foco aqui está nos métodos gerais usados para combiná-los.
+
+
+Com a função par (), você pode incluir o parâmetro gráfico mfrow = c (nrows, ncols) para criar uma matriz de gráficos nrows x ncols que são preenchidos por linha.
+
+Como alternativa, você pode usar mfcol = c (nrows, ncols) para preencher a matriz por colunas. 
+
+Por exemplo, o código a seguir cria quatro gráficos e os organiza em duas linhas e duas colunas:
+
+```{r}
+
+# Combinação de múltiplos gráficos - Linha 
+
+attach(mtcars)
+opar <- par(no.readonly=TRUE)
+par(mfrow=c(2,2))
+plot(wt,mpg, main="Scatterplot of wt vs. mpg")
+plot(wt,disp, main="Scatterplot of wt vs disp")
+hist(wt, main="Histogram of wt")
+boxplot(wt, main="Boxplot of wt")
+par(opar)
+detach(mtcars)
+
+```
+
+Os resultados são apresentados na figura 3.14. Como um segundo exemplo, vamos organizar 3 gráficos em 3 linhas e 1 coluna. Aqui está o código:
+
+```{r}
+
+# Combinação de múltiplos gráficos - Coluna 
+
+attach(mtcars)
+opar <- par(no.readonly=TRUE)
+par(mfrow=c(3,1))
+hist(wt)
+hist(mpg)
+hist(disp)
+par(opar)
+detach(mtcars)
+
+```
+
+A função layout () tem o layout de formulário (mat), em que mat é um objeto de matriz que especifica a localização dos vários gráficos a serem combinados.
+
+No código a seguir, uma figura é colocada na linha 1 e duas figuras são colocadas na linha 2:
+
+```{r}
+
+# Combinação de múltiplos gráficos - Diferentes posições 
+
+attach(mtcars)
+layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE))
+hist(wt)
+hist(mpg)
+hist(disp)
+detach(mtcars)
+
+# Combinação de múltiplos gráficos - Diferentes posições e com tamanho 
+
+attach(mtcars)
+layout(matrix(c(1, 1, 2, 3), 2, 2, byrow = TRUE),
+ widths=c(3, 1), heights=c(1, 2))
+hist(wt)
+hist(mpg)
+hist(disp)
+detach(mtcars)
+
+```
+Opcionalmente, você pode incluir as opções widths = e heights = na função layout () para controlar o tamanho de cada figura com mais precisão.
+
+# Criação de um arranjo de figuras com controle preciso
+
+Há momentos em que você deseja organizar ou sobrepor várias figuras para criar um único enredo significativo. 
+
+Fazer isso requer um controle fino sobre o posicionamento das figuras. Você pode fazer isso com o parâmetro fig = gráfico. Na lista a seguir, dois gráficos de caixa são adicionados a um gráfico de dispersão para criar um único gráfico aprimorado.
+
+
+
+```{r}
+
+# Posicionamento preciso de figuras em um gráfico
+
+opar <- par(no.readonly = TRUE)
+par(fig=c(0, 0.8, 0, 0.8))
+plot(mtcars$wt, mtcars$mpg,
+   xlab="Miles Per Gallon",
+   ylab="Car Weight")
+
+par(fig=c(0, 0.8, 0.55, 1),
+    new = TRUE)
+boxplot(mtcars$wt, horizontal=TRUE, axes = FALSE)
+par(fig=c(0.65, 1, 0, 0.8),
+    new = TRUE)
+boxplot(mtcars$mpg, axes= FALSE)
+
+mtext("Enhanced Scatterplot", 
+      side=3, outer=TRUE, line=-2)
+par(opar)
+
+
+```
+
+Para entender como esse gráfico foi criado, pense na área inteira do gráfico indo de (0,0) no canto inferior esquerdo a (1,1) no canto superior direito. 
+
+O formato do parâmetro fig = é um vetor numérico da forma c (x1, x2, y1, y2). 
+
+A primeira fig = configura o gráfico de dispersão indo de 0 a 0,8 no eixo x e 0 a 0,8 no eixo y. 
+
+O gráfico da caixa superior vai de 0 a 0,8 no eixo x e 0,55 a 1 no eixo y.
+
+O gráfico de caixa à direita vai de 0,65 a 1 no eixo x e 0 a 0,8 no eixo y.
+
+fig = inicia um novo gráfico, portanto, ao adicionar uma figura a um gráfico existente, inclua a opção new = TRUE.
+
+Escolhi 0,55 em vez de 0,8 para que a figura superior fosse puxada para mais perto do gráfico de dispersão.
+
+Da mesma forma, escolhi 0,65 para puxar o gráfico de caixa à direita para mais perto do gráfico de dispersão. Você tem que experimentar para obter o posicionamento certo.
+

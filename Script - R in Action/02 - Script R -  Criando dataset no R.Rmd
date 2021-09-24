@@ -1,0 +1,655 @@
+---
+R Language Course
+Author: Álvaro Robério de Souza Sá 
+Filiation: Universidade Federal de Pernambuco
+Reference: R in Action - Robert I. Kabacoff 
+Repository: 
+---
+
+# CAPTION 02 - Creating a dataset - Criando dataset no R 
+
+O primeiro passo em qualquer análise de dados é a criação de um conjunto de dados contendo as informações a serem estudadas, em um formato que atenda às suas necessidades. 
+
+Em R, esta tarefa envolve o seguinte: 
+
+1) Seleção de uma estrutura de dados para manter seus dados 
+2) Inserção ou importação de seus dados na estrutura de dados
+
+Essas fontes de dados podem incluir arquivos de texto, planilhas, pacotes estatísticos e sistemas de gerenciamento de banco de dados (SQL).
+
+Depois que um conjunto de dados é criado, você normalmente fará anotações, adicionando rótulos descritivos para variáveis e códigos de variáveis.
+
+Vamos começar com o básico!
+
+# Compreendendo conjunto de dados
+
+Um conjunto de dados é geralmente uma matriz retangular de dados com linhas representando observações e colunas representando variáveis.
+
+Diferentes tradições têm nomes diferentes para as linhas e colunas de um conjunto de dados.
+
+Os estatísticos se referem a eles como observações e variáveis, os analistas de banco de dados os chamam de registros e campos, e aqueles das disciplinas de mineração de dados e aprendizado de máquina os chamam de exemplos e atributos.
+
+Em uma matriz (ou conjunto) de dados podemos ter: 
+
+1) Identificador 
+2) Variável Contínua (Idade)
+3) Variável Nominal (Diabetes - Tipo1 ou Tipo2)
+4) Variável Ordinal (Status - Pobre, Rico, Classe Média)
+
+Os tipos de dados ou modos que R pode manipular incluem numérico, caractere, lógico
+(VERDADEIRO/FALSO), complexo (números imaginários) e bruto (bytes).
+
+Obs.: R refere-se a identificadores de caso como nomes de domínio e variáveis categóricas (nominais e ordinais) como fatores. 
+
+# Estrutura de dados 
+
+Estruturas de dados R tem uma ampla variedade de objetos para armazenar dados, incluindo escalares (scalars), vetores (vectors), matrizes (matrices), matrizes (array), quadros de dados (Data Frame) e listas (list).
+
+# Observações 
+
+Em R, um objeto é qualquer coisa que pode ser atribuída a uma variável. Isso inclui constantes, estruturas de dados, funções e até gráficos.
+
+As colunas são variáveis e as linhas são observações.
+
+Você pode ter variáveis de diferentes tipos (por exemplo, numérico, caractere) no mesmo quadro de dados (data frame). Quadros de dados (data frame) são as principais estruturas que você usará para armazenar conjuntos de dados.
+
+Vamos ver isso na prática!
+
+# Vetores
+
+Vetores são matrizes unidimensionais que podem conter dados numéricos, dados de caracteres ou dados lógicos. A função de combinação c( ) é usada para formar o vetor.
+
+Os escalares são vetores de um elemento.
+
+```{r}
+
+# Vetores  a) Vetor númerico, B) Vetor de caracteres e c) Vetor lógico, enquanto f, g e h são escalares (constantes). 
+
+a <- c(1,2,5,6,-2,4)
+b <- c("one", "two", "three")
+c <- c(TRUE, TRUE, TRUE, FALSE, TRUE, FALSE)
+f <- 3
+g <- "US"
+h <- TRUE
+
+# Localizando termos nos Vetores: a[c(2,4)] refere-se ao 2º e 4º elemento do vetor a
+
+a[c(2,4)]
+
+a
+a[3]
+a[c(1,3,5)]
+a[2:6]
+
+# Nota: a <- c(2:6) é equivalente a<- c(2,3,4,5,6)
+
+```
+# Matrizes (Matrices)
+Uma matriz é uma matriz bidimensional em que cada elemento tem o mesmo modo (numérico, caractere ou lógico). Matrizes são criadas com a função de matriz.
+
+```{r}
+# Matrizes são criadas com a função de matriz. O formato geral é: 
+
+mymatrix <- matrix(vector, nrow= num_of_rows, ncol=number_of_columns,
+                   byrow=logical_value, dimnames = list(char_vector_rownames, 
+                                                        char_vector_colnames))
+
+# nrow=linha e ncol=dimenssões, dimnames (rótulos de linha e cóluna), por outro lado, a opção byrow indica se a matriz deve ser preenchida por linha (byrow=TRUE) e por coluna (byrow=FALSE).
+
+# Exercício 
+
+# a) Crie uma matriz 5x4 
+
+y <- matrix(1:20, nrow=5, ncol=4)
+y
+
+# b) crie uma matriz 2X2 
+
+cells <- c(1,26,24,68)
+cells
+
+rnames <- c("R1", "R2")
+rnames
+
+cnames <- c("c1", "c2")
+cnames
+
+mymatrix <- matrix(cells, nrow=2, ncol=2, byrow=TRUE, dimnames=list(rnames, cnames))
+mymatrix
+
+mymatrix <- matrix(cells, nrow=2, ncol=2, byrow=FALSE, dimnames=list(rnames, cnames))
+mymatrix
+
+# Usando subscritos de matriz
+
+x <- matrix(1:10, nrow=2)
+x
+
+y <- matrix(1:10, ncol=2)
+y
+
+x[2, ]
+x[, 2]
+x[1,4]
+x[1, c(4,5)]
+
+```
+
+# Arrays (maitrzes)
+
+Arrays são semelhantes às matrizes, mas podem ter mais de duas dimenssões. 
+
+Como você pode ver, os arrays são uma extensão natural das matrizes. Eles podem ser úteis em programação de novos métodos estatísticos. Como matrizes, eles devem ser um único modo.
+
+A identificação de elementos segue a mesma ótica das matrizes.
+
+```{r}
+
+# Eles são criados com uma função de matriz da seguinte forma:
+
+myarray <- array(vector, dimensions, dimnames)
+
+# Criando Array 
+
+dim1 <- c("A1", "A2")
+dim2 <- c("B1", "B2", "B3")
+dim3 <- c("C1", "C2", "C3", "C4")
+
+z <- array(1:24, c(2,3,4), dimnames=list(dim1, dim2, dim3))
+z
+
+```
+
+# Data Frames 
+
+Um quadro de dados é mais geral do que uma matriz, pois diferentes colunas podem conter diferentes modos de dados (numérico, caractere, etc.). Os frames de dados são a estrutura de dados mais comum do R.
+
+
+```{r}
+# Um quadro de dados (data frame) é criado com a função data.frame ()
+
+mydata <- data.frame(col1, col2, col3, ...)
+
+# Creando Data Frame 
+
+patientID <- c(1, 2, 3, 4)
+age <- c(25, 34, 28, 52)
+diabetes <- c("Type1", "Type2", "Type1", "Type1")
+status <- c("Poor", "Improved", "Excellent", "Poor")
+patientdata <- data.frame(patientID, age, diabetes, status)
+patientdata
+
+# Especificando elementos do Data Frame 
+
+patientdata[1:2]
+
+patientdata[c("diabetes", "status")]
+
+patientdata$age
+
+# Tabulação Cruzada 
+
+table(patientdata$diabetes, patientdata$status)
+
+```
+
+# Funções - attach () / detach () / with ()
+
+Pode ser cansativo digitar patientdata $ no início de cada nome de variável, portanto, atalhos estão disponíveis. Você pode usar as funções attach () e detach () ou with () para simplificar seu código.
+
+attach () = adiciona o quadro de dados ao caminho de pesquisa R.Quando um nome de variável é encontrado, os quadros de dados no caminho de pesquisa são verificados para localizar a variável.
+
+detach () = remove o quadro de dados do caminho de pesquisa. Observe que detach () não faz nada com o quadro de dados em si. A instrução é opcional, mas é uma boa prática de programação e deve ser incluída rotineiramente. 
+
+
+Aqui, já temos um objeto chamado mpg em nosso ambiente quando o quadro de dados mtcars é anexado. Nesses casos, o objeto original tem precedência, o que não é o que você deseja. O enredo falha porque mpg tem 3 elementos e disp tem 32 elementos. As funções attach () e detach () são mais bem usadas quando você está analisando um único quadro de dados e é improvável que tenha vários objetos com o mesmo nome. Em qualquer caso, fique atento aos avisos que dizem que os objetos estão sendo mascarados. Uma abordagem alternativa é usar a função with ().
+
+```{r}
+
+# Aplicação da função attach  
+# mpg = Quilometragem | disp =  deslocamento do motor | wt = peso
+
+data(mtcars)
+summary(mtcars$mpg)
+plot(mtcars$mpg, mtcars$disp)
+plot(mtcars$mpg, mtcars$wt)
+
+# Repita o código excluindo: rm(mpg)
+mpg <- c(25, 36, 47)
+attach(mtcars)
+plot(mpg, wt)
+mpg
+
+# Escrevendo o código adequadamente com with()
+
+with(mtcars, { 
+  summary(mpg, disp, wt)
+          plot(mpg, disp)
+          plot(mpg, wt)})
+
+# Outro uso da função with ()
+
+with(mtcars, {
+  stats <- summary(mpg)
+  stats })
+
+# Outro uso da função with (), com o operador de atribuição especial <<-. O atribuidor salva os resultados. 
+
+with(mtcars, {
+  nokeepstats <- summary(mpg)
+  keepstats <<- summary(mpg)
+})
+
+nokeepstats
+
+keepstats
+```
+
+# Se você precisar criar objetos que existirão fora da construção with (), use o operador de atribuição especial << - em vez do padrão (<-). Isso salvará o objeto no ambiente global fora da chamada with (). 
+
+A maioria dos livros sobre R recomenda o uso de with () em vez de attach (). Acho que, em última análise, a escolha é uma questão de preferência e deve ser baseada no que você está tentando alcançar e na sua compreensão das implicações.
+
+# Identificadores de caso 
+
+No exemplo de dados do paciente, PatientID é usado para identificar indivíduos no conjunto de dados. Em R, os identificadores de caso podem ser especificados com uma opção de nome de linha na função de quadro de dados
+
+```{r}
+# Exemplo de identificadores de caso 
+
+patientdata <- data.frame(patientID, age, diabetes, status, 
+                          row.names = patientID)
+# Especifica PatientID como a variável a ser usada em casos de rotulagem em várias impressões e gráficos produzidos por R.
+
+```
+
+# Factors 
+
+Como você viu, as variáveis podem ser descritas como nominais, ordinais ou contínuas. Variáveis nominais são categóricas, sem uma ordem implícita.
+
+Diabetes (Tipo1, Tipo2) é um exemplo de uma variável nominal. Mesmo se o Tipo1 for codificado como 1 e o Tipo2 for codificado como 2 nos dados, nenhuma ordem está implícita. Variáveis ordinais implicam ordem, mas não quantidade. O status (ruim, melhorado, excelente) é um bom exemplo de uma variável ordinal.
+
+O fator de função () armazena os valores categóricos como um vetor de inteiros no intervalo [1 ... k] (onde k é o número de valores únicos na variável nominal), e um vetor interno de cadeias de caracteres (os valores originais ) mapeados para esses inteiros.
+
+Por exemplo, suponha que você tenha o vetor
+
+diabetes <- c("Type1", "Type2", "Type1", "Type1")
+
+Quaisquer análises realizadas no vetor diabetes tratará a variável como nominal e selecionará os métodos estatísticos apropriados para este nível de medição.
+
+```{r}
+# Criação de Factor (variável categórica)
+
+diabetes <- factor(diabetes, ordered = TRUE)
+diabetes <- factor(diabetes)
+print(diabetes)
+
+# Para vetores que representam variáveis ordinais, você adiciona o parâmetro ordered = TRUE à função factor (). (3, 2, 1, 3)
+
+status <- c("Poor", "Improved", "Excellent", "Poor")
+status <- factor(status, ordered=TRUE)
+status
+
+# Por padrão, os níveis de fator para vetores de caracteres são criados em ordem alfabética. Isso funcionou para o fator de status, porque a ordem "Excellent", "Improved" e "Poor". Para corrigir isso, utiliza-se uma função de níveis. 
+
+status <- factor(status, order=TRUE, levels = c("Poor", "Improved", "Excellent"))
+status
+
+# Atribuiria os níveis como 1 = Fraco, 2 = Melhorado, 3 = Excelente.
+
+```
+
+```{r}
+
+# Usando a função "factors"
+
+patientID <- c(1, 2, 3, 4)
+age <- c(25, 34, 28, 52)
+diabetes <- c("Type1", "Type2", "Type1", "Type1")
+status <- c("Poor", "Improved", "Excellent", "Poor")
+diabetes <- factor(diabetes)
+status <- factor(status, order=TRUE)
+patientdata <- data.frame (patientID, age, diabetes, status)
+
+# Visualizando estrutura dos dados 
+
+str(patientdata)
+
+# Estatística descritiva 
+
+summary(patientdata)
+
+```
+
+# List 
+
+As listas são os mais complexos dos tipos de dados R. Basicamente, uma lista é uma coleção ordenada de objetos (componentes). 
+
+Uma lista permite que você reúna uma variedade de objetos (possivelmente não relacionados) sob um nome. Por exemplo, uma lista pode conter uma combinação de vetores, matrizes, quadros de dados e até mesmo outras listas. 
+
+Você cria uma lista usando a função list (): 
+
+mylist <- list(object1, object2, ...)
+
+onde os objetos são qualquer uma das estruturas vistas até agora. Opcionalmente, você pode nomear os objetos em uma lista:
+
+mylist <- list(name1=object1, name2=object2, ...)
+
+```{r}
+
+# Creando uma lista 
+
+g <- "My First List"
+h <- c(25, 26, 18, 39)
+j <- matrix(1:10, ncol=5)
+k <- c("one", "two", "three") 
+
+mylist <- list(title=g, ages=h, j, k)
+mylist
+
+mylist[[2]]
+mylist[["ages"]]
+
+```
+
+# Entrada de Dados (Data Input)
+
+Agora que você tem estruturas de dados, você precisa colocar alguns dados nelas! Como analista de dados, você normalmente se depara com dados que chegam até você de uma variedade de fontes e em uma variedade de formatos. Sua tarefa é importar os dados para suas ferramentas, analisar os dados,e relatar os resultados. R fornece uma ampla gama de ferramentas para importação de dados.
+
+Alguns dados importados para o R:  
+
+SAS, SPSS, Stata (Statistical Packages)
+ASCLL, XML, Webscraping (Text Files)
+SQL, MySQL, Oracle, Access (Database Management Systems)
+Excel, netCFD, HDF5 (other)
+
+R pode importar dados do teclado, de arquivos simples, do Microsoft Excel e Access, de pacotes estatísticos populares, de formatos especiais e de uma variedade de sistemas de gerenciamento de banco de dados relacionais. 
+
+# Inserindo dados do teclado 
+
+Talvez o método mais simples de entrada de dados seja pelo teclado. A função edit () em R invocará um editor de texto que permitirá que você insira seus dados manualmente.
+
+Atribuições como idade = numérico (0) criam uma variável de um modo específico, mas sem dados reais. Observe que o resultado da edição é atribuído de volta ao próprio objeto. A função edit () opera em uma cópia do objeto. Se você não atribuir um destino, todas as suas edições serão perdidas!
+
+Este método de entrada de dados funciona bem para pequenos conjuntos de dados. Para conjuntos de dados maiores, você provavelmente desejará usar os métodos que descreveremos a seguir: importação de dados de arquivos de texto existentes, planilhas do Excel, pacotes estatísticos ou sistemas de gerenciamento de banco de dados.
+
+```{r}
+
+# Inserindo dados via teclado no DataFrame
+
+mydata <- data.frame(age=numeric(0), gender=character(0), weight=numeric(0))
+mtcars <- edit(mtcars)
+
+```
+
+# Importando dados de um arquivo de texto delimitado
+
+Você pode importar dados de arquivos de texto delimitados usando read.table (), uma função que lê um arquivo em formato de tabela e o salva como um quadro de dados (data frame). Esta é a sintaxe:
+
+mydataframe <- read.table(file, header= logical_value, sep="delimiter", row.names= "name")
+
+onde o arquivo é um arquivo ASCII delimitado, o cabeçalho é um valor lógico que indica se a primeira linha contém nomes de variáveis (VERDADEIRO (TRUE) ou FALSO (FALSE)), sep especifica o delimitador (separador).
+
+# NOTA
+
+Muitos dos exemplos neste capítulo importam dados de arquivos que existem no computador do usuário. R fornece vários mecanismos para acessar dados por meio de conexões também. Por exemplo, as funções file (), gzfile (), bzfile (), xzfile (), unz () e url () podem ser usadas no lugar do nome do arquivo. 
+
+A função file () permite que o usuário acesse arquivos, a área de transferência e a entrada padrão de nível C. As funções gzfile (), bzfile (), xzfile () e unz () permitem que o usuário leia os arquivos compactados. As funções url () permitem que você acesse arquivos da Internet por meio de uma URL completa que inclui http: //, ftp: // ou arquivo: //. Para HTTP e FTP, os proxies podem ser especificados. 
+
+Por conveniência, URLs completos (entre as marcas "") geralmente também podem ser usados diretamente no lugar dos nomes dos arquivos. Veja a ajuda (arquivo) para detalhes. 
+
+# Importando dados do Excel
+
+A melhor maneira de ler um arquivo Excel é exportá-lo para um arquivo delimitado por vírgulas de dentro do Excel e importá-lo para R usando o método descrito anteriormente. 
+
+Em sistemas Windows, você também pode usar o pacote RODBC para acessar arquivos Excel. A primeira linha da planilha deve conter variáveis.
+
+# Importando dados de XML
+
+Cada vez mais, os dados são fornecidos na forma de arquivos codificados em XML. R tem vários pacotes para lidar com arquivos XML. Por exemplo, o pacote "XML" escrito por usuários de Duncan Temple Langallows para ler, escrever e manipular arquivos XML. 
+
+A cobertura de XML está além do escopo deste texto. Os leitores interessados em acessar documentos XML de dentro do R podem consultar a excelente documentação do pacote em www.omegahat.org.
+
+# Webscraping
+
+No webcraping, o usuário extrai informações incorporadas em uma página da web disponível na internet e as salva em estruturas R para análises posteriores.
+
+Uma maneira de fazer isso é baixar a página da web usando a função readLines () e manipulá-la com funções como grep () e gsub (). 
+
+Para páginas da web complexas, os pacotes RCurl e XML podem ser usados para extrair as informações desejadas. Para obter mais informações, incluindo exemplos, consulte “Webscraping usando readLines e RCurl,” disponível no site Programming with R (www.programmingr.com).
+
+# Importando dados do SPSS
+
+Conjuntos de dados SPSS podem ser importados para R por meio da função read.spss () no pacote externo. 
+
+Como alternativa, você pode usar a função spss.get () no pacote Hmisc. spss.get () é uma função de wrapper que define automaticamente muitos parâmetros de leitura. 
+
+spss () para você, tornando a transferência mais fácil e mais consistente com o que os analistas de dados esperam como resultado. Primeiro, baixe e instale o pacote Hmisc (o pacote externo já vem instalado por padrão).
+
+# Importando dados do SAS
+
+Uma série de funções em R são projetadas para importar conjuntos de dados SAS, incluindo leitura. ssd () no pacote externo e sas.get () no pacote Hmisc.
+
+SAS program:
+
+proc export data=mydata
+ outfile="mydata.csv"
+ dbms=csv;
+run;
+
+R program:
+mydata <- read.table("mydata.csv", header=TRUE, sep=",")
+
+# Importando dados do Stata
+
+A importação de dados do Stata para o R é direta. O código necessário é parecido com este:
+
+library(foreign)
+mydataframe <- read.dta("mydata.dta")
+
+# Importando dados Importando de netCDF
+
+O software de código aberto netCDF (Network Common Data Form) da Unidata contém formatos de dados independentes de máquina para a criação e distribuição de dados científicos orientados a array. netCDF é comumente usado para armazenar dados geofísicos. Os pacotes ncdf e ncdf4 fornecem interfaces R de alto nível para arquivos de dados netCDF.
+
+# Importando dados de HDF5
+
+HDF5 (Hierarchical Data Format) é um pacote de tecnologia de software para o gerenciamento de coleções de dados extremamente grandes e complexas. 
+
+O pacote "hdf5" pode ser usado para escrever objetos R em um arquivo em um formato que possa ser lido por um software que entenda o formato HDF5. 
+
+Esses arquivos podem ser lidos de volta no R posteriormente. O pacote é experimental e assume que o usuário possui a biblioteca HDF5 (versão 1.2 ou superior) instalado. No momento, o suporte para o formato HDF5 em R é extremamente limitado.
+
+# Acessando sistemas de gerenciamento de banco de dados (DBMSs)
+
+R pode interagir com uma ampla variedade de sistemas de gerenciamento de banco de dados relacional (DBMSs), incluindo Microsoft SQL Server, Microsoft Access, MySQL, Oracle, PostgreSQL, DB2, Sybase, Teradata e SQLite. 
+
+Alguns pacotes fornecem acesso por meio de drivers de banco de dados nativos, enquanto outros oferecem acesso por ODBC ou JDBC.
+
+Usar R para acessar dados armazenados em DMBSs externos pode ser uma maneira eficiente de analisar grandes conjuntos de dados (consulte o apêndice G) e alavanca o poder de SQL e R.
+
+# A INTERFACE ODBC 
+
+Talvez o método mais popular de acessar um DBMS em R seja por meio do pacote "RODBC", que permite que R se conecte a qualquer DBMS que tenha um driver ODBC. Isso inclui todos os DBMSs listados.
+
+A primeira etapa é instalar e configurar o driver ODBC apropriado para sua plataforma e banco de dados - eles não fazem parte de R. Se os drivers necessários ainda não estiverem instalados em sua máquina, uma pesquisa na Internet deve fornecer opções.
+
+Assim que os drivers forem instalados e configurados para os bancos de dados de sua escolha, instale o pacote RODBC. Você pode fazer isso usando o comando install.packages ("RODBC").
+
+
+```{r}
+
+# Importando arquivo de texto delimitado 
+
+grades <- read.table("studentgrades.csv", header=TRUE, sep=",",
+                     row.names = "STUDENTID")
+help("read.table")
+
+# Importando arquivos Excel
+
+getwd ( )
+.libPaths ("C:/Program Files/R/R-4.1.1/library")
+install.packages("RODBC")
+
+channel <- odbcConnectExcel("myfile.xls")
+mydataframe <- sqlFetch(channel, "mysheet")
+odbcClose(channel)
+
+install.packages("xlsx")
+library(xlsx)
+workbook <- "c:/myworkbook.xlsx"
+mydataframe <- read.xlsx(workbook, 1)
+
+# Importando dados de SPSS
+
+install.packages("Hmisc")
+library(Hmisc)
+mydataframe <- spss.get("mydata.sav", use.value.labels=TRUE)
+
+# Importando dados do SAS
+
+#SAS program:
+
+proc export data=mydata
+ outfile="mydata.csv"
+ dbms=csv;
+run;
+
+#R program:
+mydata <- read.table("mydata.csv", header=TRUE, sep=",")
+ 
+# Importando dados do Stata
+ 
+library(foreign)
+mydataframe <- read.dta("mydata.dta")
+
+# Importanto dados de netCDF (geofísicos)
+
+library(ncdf)
+nc <- nc_open("mynetCDFfile")
+myarray <- get.var.ncdf(nc, myvar)
+
+# Principais funções incluidas no pacote RODBC 
+
+install.packages("RODBC")
+library(RODBC)
+
+# 1 - Abra uma conexão com um banco de dados ODBC
+
+odbcConnect(dsn,uid="",pwd="") 
+
+# 2 - Ler uma tabela de um banco de dados ODBC em um quadro de dados
+
+sqlFetch(channel,sqltable)
+
+# 3 - Envie uma consulta a um banco de dados ODBC e retorne os resultados
+
+sqlQuery(channel,query)
+
+# 4 - Grave ou atualize (append=TRUE) um quadro de dados para uma tabela no banco de dados ODBC
+
+sqlSave(channel,mydf,tablename = sqtable, append=FALSE) 
+
+# 5 - Remova uma tabela do banco de dados ODBC
+
+sqlDrop(channel,sqtable) 
+
+# 6 - Feche a conexão
+
+close(channel) 
+
+# O pacote RODBC permite comunicação bidirecional entre R e um banco de dados SQL conectado por ODBC. Isso significa que você pode não apenas ler dados de um banco de dados conectado em R, mas pode usar R para alterar o conteúdo do próprio banco de dados. Exemplo abaixo: 
+
+library(RODBC)
+myconn <-odbcConnect("mydsn", uid="Rob", pwd="aardvark")
+crimedat <- sqlFetch(myconn, Crime)
+pundat <- sqlQuery(myconn, "select * from Punishment")
+close(myconn) 
+
+```
+
+# PACOTES RELACIONADOS 
+
+A DBI O pacote DBI fornece uma interface geral e consistente do lado do cliente para o DBMS. Com base nessa estrutura, o pacote RJDBC fornece acesso ao DBMS por meio de um driver JDBC. Certifique-se de instalar os drivers JDBC necessários para sua plataforma e banco de dados. Outros pacotes úteis baseados em DBI incluem RMySQL, ROracle, RPostgreSQL e RSQLite.
+
+Esses pacotes fornecem drivers de banco de dados nativos para seus respectivos bancos de dados, mas podem não estar disponíveis em todas as plataformas. 
+
+# Anotações no conjunto de dados do R 
+
+# Rótulo de Variáveis 
+
+Os analistas de dados normalmente fazem anotações em conjuntos de dados para tornar os resultados mais fáceis de interpretar.
+
+Normalmente, a anotação inclui a adição de rótulos descritivos a nomes de variáveis e rótulos de valor aos códigos usados para variáveis categóricas. 
+
+Por exemplo, para a variável idade, você pode querer anexar o rótulo mais descritivo “Idade na hospitalização (em anos)”. Para a variável de gênero codificada 1 ou 2, você pode querer associar os rótulos "masculino" e "feminino".
+
+# Rótulos de Valor 
+
+A função factor () pode ser usada para criar rótulos de valor para variáveis categóricas. Continuando nosso exemplo, digamos que você tenha uma variável chamada "gender", que é codificada como 1 para masculino (male) e 2 para feminino (female). 
+
+
+```{r}
+# Criando rótulos em variáveis
+
+names(patientdata)[2] <- "Age at hospitalization (in years)"
+
+# Criando rótulos de valor 
+
+patientdata$gender <- factor(patientdata$gender, 
+                             levels = c(1,2),
+                             labels = c("male", "female"))
+```
+
+# Funções úteis para trabalhar com objetos de dados
+
+Terminaremos este capítulo com um breve resumo das funções úteis para trabalhar com objetos de dados: 
+
+length(object)  = Número de elementos/componentes.
+
+dim(object)     = Dimensões de um objeto.
+
+str(object)     = Estrutura de um objeto.
+
+class(object)   = Classe ou tipo de um objeto.
+
+mode(object)    = Como um objeto é armazenado.
+
+names(object)   = Nomes de componentes em um objeto.
+
+c(object, object,...) = Combina objetos em um vetor.
+
+cbind(object, object, ...) = Combina objetos como colunas.
+
+rbind(object, object, ...) = Combina objetos como linhas.
+
+object = Imprime o objeto.
+
+head(object) = Lista a primeira parte do objeto.
+
+tail(object) = Lista a última parte do objeto.
+
+ls() = Lista os objetos atuais.
+
+rm(object, object, ...) = Exclui um ou mais objetos. A declaração
+rm (list = ls ()) irá remover a maioria dos objetos do ambiente de trabalho.
+
+newobject <- edit(object) = Edita o objeto e salva como novo objeto
+
+fix(object) = Edições implementadas.
+
+
+Já discutimos a maioria dessas funções. 
+
+As funções head () e tail () são úteis para digitalizar rapidamente grandes conjuntos de dados. Por exemplo, head (patientdata) lista as primeiras seis linhas do quadro de dados, enquanto tail (patientdata) lista as últimas seis. 
+
+# Cobriremos funções como length (), cbind () e rbind () no próximo capítulo. Eles estão reunidos aqui como referência.
+
+```{r}
+# Listagem das primeiras seis linhas do dataframe 
+
+head(patientdata)
+
+# Listagem das últimas seis linhas do datagrame 
+
+tail(patientdata)
+
+```
