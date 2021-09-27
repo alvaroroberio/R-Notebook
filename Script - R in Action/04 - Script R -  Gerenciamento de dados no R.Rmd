@@ -1,0 +1,825 @@
+---
+R Language Course
+Author: Álvaro Robério de Souza Sá 
+Filiation: Universidade Federal de Pernambuco
+Reference: R in Action - Robert I. Kabacoff 
+Repository: 
+---
+
+# CAPTION 04  - Basic data management - Gerenciamento Básico de Dados 
+
+1 - Manipulação de datas e valores ausentes
+2 - Compreendendo as conversões de tipo de dados
+3 - Criando e recodificando variáveis
+4 - Classificando, mesclando e criando subconjuntos de conjuntos de dados 
+5 - Selecionando e descartando variáveis 
+
+
+“Dados é um negócio bagunçado - um negócio muito, muito bagunçado.” Em meu próprio trabalho, até 60 por cento do tempo que gasto na análise de dados é focado na preparação dos dados para análise. Vou estourar e dizer que provavelmente o mesmo é verdade de uma forma ou de outra para a maioria dos analistas de dados do mundo real.
+
+```{r}
+# Criando um quadro de dados de liderança
+
+manager <- c(1, 2, 3, 4, 5)
+date <- c("10/24/08", "10/28/08", " 10/1/08", "10/12/08", "5/1/09")
+country <- c("US", "US", "UK", "UK", "UK")
+gender <- c("M", "F", "F", "M", "F") 
+age <- c(32, 42, 25, 39, 99)  
+q1 <- c(5, 3, 3, 3, 2)
+q2 <- c(4, 5, 5, 3, 2)
+q3 <- c(5, 2, 5, 4, 1)
+q4 <- c(5, 5, 5, NA, 2)
+q5 <- c(5, 5, 2, NA, 1) 
+
+leadership <- data.frame (manager, date, country, gender, age, q1, q2, q3,
+                          q4, q5, stringsAsFactors = FALSE)
+
+leadership
+```
+
+Para abordar as questões de interesse, devemos primeiro abordar várias questões de gerenciamento de dados. Aqui está uma lista parcial:
+
+A) As cinco classificações (q1 a q5) precisarão ser combinadas, resultando em uma única pontuação média deferencial de cada gerente. 
+
+B) Em pesquisas, os entrevistados costumam pular as perguntas. Por exemplo, o gerente de classificação do chefe 4 ignorou as perguntas 4 e 5. Precisamos de um método para lidar com dados incompletos. Também precisaremos recodificar valores como 99 para idade para ausente. 
+
+C) Pode haver centenas de variáveis em um conjunto de dados, mas podemos estar interessados apenas em algumas. Para simplificar as coisas, queremos criar um novo conjunto de dados apenas com as variáveis de interesse. 
+
+D) Pesquisas anteriores sugerem que o comportamento de liderança pode mudar em função da idade do gerente. Para examinar isso, podemos querer recodificar os valores atuais de idade em um novo agrupamento de idade categórica (por exemplo, jovem, meia-idade, idoso).
+
+E) O comportamento da liderança pode mudar com o tempo. Podemos querer nos concentrar no comportamento diferente durante a recente crise financeira global. Para isso, podemos limitar o estudo aos dados coletados durante um período específico de tempo (digamos, de 1º de janeiro de 2009 a 31 de dezembro de 2009).
+
+
+# Criando uma nova variável 
+
+Em um projeto de pesquisa típico, você precisará criar novas variáveis e transformar as existentes. Isso é feito com declarações do formulário: 
+
+variable <- expression
+
+# Operadores Aritméticos 
+
+Adição (+)
+Subtração (-)
+Multiplicação (*)
+Divisão (/)
+Exponencial (^ ou **)
+Módulo (x mod y) 5%%2 is 1 (x%%y)
+Divisão Inteira 5%/%2  is 2 (x%/%y)
+
+Digamos que você tenha um quadro de dados denominado mydata, com variáveis x1 e x2, e deseja criar uma nova variável sumx que adiciona essas duas variáveis e uma nova variável chamada meanx que calcula a média das duas variáveis. Se você usar o código:
+
+sumx <- x1 + x2 
+meanx <- (x1 + x2)/2 
+
+sumx <- mydata$x1 + mydata$x2
+meanx <- (mydata$x1 + mydata$x2)/2 
+
+```{r}
+
+# Modo1: Criando novas variáveis 
+
+mydata <- data.frame(x1 = c(2, 2, 6, 4),
+                     x2 = c(3, 4, 3, 8))
+
+mydata$sumx <- mydata$x1 + mydata$x2
+mydata$meanx <- (mydata$x1 + mydata$x2)/2 
+
+# Modo2: Criando novas variáveis 
+
+attach(mydata)
+mydata$sumx <- x1 + x2
+mydata$meanx <- (x1 + x2)/2
+detach(mydata)
+
+# Modo3: Criando novas variáveis 
+
+mydata <- transform(mydata, 
+                    sumx = x1 + x2,
+                    meanx = (x1 + x2)/2)
+```
+
+Pessoalmente, prefiro o terceiro método, exemplificado pelo uso da função transform (). Ele simplifica a inclusão de quantas novas variáveis forem desejadas e salva os resultados no quadro de dados.
+
+# Variáveis de recodificação
+
+A recodificação envolve a criação de novos valores de uma variável condicional aos valores existentes da mesma e/ou outras variáveis. Por exemplo, você pode querer
+
+1) Transforme uma variável contínua em um conjunto de categorias
+2) Substituir os valores codificados incorretamente por valores corretos
+3) Criar uma variável de aprovação/reprovação com base em um conjunto de pontuações de corte
+
+
+Para recodificar os dados, você pode usar um ou mais dos operadores lógicos de R. Operadores lógicos são expressões que retornam TRUE (VERDADEIRO) ou FALSE (FALSO).
+
+(<) Menor que
+(<=) Menos que ou igual a
+(>) Maior que
+(>=) Maior que ou igual a
+(==) Exatamente igual a
+(!=) Diferente de
+(!X) Não x
+(x | y) x ou y
+(x & y) x e  y
+(isTRUE(x)) Teste se x é VERDADEIRO
+
+1) Exercício de Recodificação
+
+Digamos que você queira recodificar as idades dos gerentes em nosso conjunto de dados de liderança de
+a variável contínua idade para a variável categórica agecat (jovem (Young), meia-idade (Middle Aged),
+Mais velho (Elder)). Primeiro, você deve recodificar o valor 99 para idade para ausente com um código como
+
+
+```{r}
+
+# Recodificando: Transformando variável continua em categórica
+
+## A variável de instrução variable[condition] <- expression só fará a atribuição quando a condição for TRUE.
+
+leadership$age[leadership$age == 99] <- NA 
+
+# Depois de especificar os valores ausentes para a idade, você pode usar o seguinte código para criar a variável agecat:
+
+leadership$agecat[leadership$age > 75] <- "Elder"
+leadership$agecat[leadership$age >= 55 & leadership$age <= 75] <- "Middle Aged"
+leadership$agecat[leadership$age < 55] <- "Young"
+
+leadership
+
+## Este código pode ser escrito de forma mais compacta como:
+
+leadership <- within(leadership, { 
+                      agecat <- NA
+                      agecat[age >75]                <- "Elder"
+                      agecat[age >= 55 & age <= 75]  <- "Middle Aged"
+                      agecat[age < 55]               <- "Young"})
+leadership
+
+## Funções similares para códigos compactos: with ( ) e within ( )
+
+```
+
+Você inclui os nomes dos quadros de dados em liderança $agecat para garantir que a nova variável seja salva de volta no quadro de dados. Você define a meia-idade como 55 a 75, para que eu não me sinta tão velha. Observe que se você não tivesse recodificado 99 como ausente para a idade primeiro, o gerente 5 teria recebido erroneamente o valor "Ancião" para agecat.
+
+A função within () é semelhante à função with (), mas permite que você modifique o quadro de dados. Primeiro, a variável agecat variável é criada e definida como ausente para cada linha do quadro de dados. Em seguida, as declarações restantes dentro das chaves são executadas em ordem. 
+
+Lembre-se de que agecat é uma variável de caractere; você é provável que queira transformá-lo em um fator ordenado.
+
+Vários pacotes oferecem funções úteis de recodificação; em particular, a função recode () do pacote "doBy" codifica vetores e fatores numéricos e de caracteres de forma muito simples.
+
+O pacote doBy oferece recodevar (), outra função popular. 
+
+Finalmente, R vem com cut ( ), que permite dividir o intervalo de uma variável numérica em intervalos, retornando um fator.
+
+# Renomeando variáveis 
+
+Se você não estiver satisfeito com os nomes de suas variáveis, pode alterá-los de forma interativa ou programática. 
+
+Digamos que você queira alterar o gerenciador de variáveis para "managerID" e date para "testDate". 
+
+Você pode usar a declaração: fix(leadership) para invocar um editor interativo, clique nos nomes das variáveis e renomeie-as nas caixas de diálogo apresentadas.
+
+Programaticamente, o pacote de reformulação tem uma função rename ( ) que é útil para alterar os nomes das variáveis.
+
+O formato da função rename ( ) é: 
+
+rename(dataframe, c(oldname="newname", oldname="newname",…))
+
+```{r}
+
+# Solicitando painel interativo para edição do nome de variáveis 
+
+fix(leadership) 
+
+# Edição do nome de variáveis de forma programática 
+
+library(reshape)
+
+leadership <- rename (leadership, c(manager="managerID", date="testDate"))
+
+# Finalmente, você pode renomear variáveis por meio da função names (). Por exemplo:
+
+names(leadership)[2] <- "testDate"
+
+names(leadership)
+
+# De maneira semelhante (renomeando q1-q5): 
+
+names(leadership)[6:10] <- c("item1", "item2", "item3", "item4", "item5")
+
+names(leadership)
+
+
+```
+
+O pacote de remodelagem não é instalado por padrão, então você precisará instalá-lo pela primeira vez
+usando o comando install.packages ("reshape"). O pacote de reformulação tem um poderoso conjunto de funções para alterar a estrutura de um conjunto de dados, que serão abordados adiante. 
+
+# Missing values (Valores ausentes)
+
+Em um projeto de qualquer tamanho, é provável que os dados fiquem incompletos devido a perguntas perdidas, equipamento defeituoso ou dados codificados incorretamente. 
+
+Em R, os valores ausentes são representados pelo símbolo NA (não disponível).
+
+Os valores impossíveis (por exemplo, dividir por 0) são representados pelo símbolo NaN (não um número). 
+
+Ao contrário de programas como SAS, R usa o mesmo símbolo de valores ausentes para caracteres e dados numéricos.
+
+R fornece várias funções para identificar observações que contêm valores ausentes. 
+
+A função is.na () permite que você teste a presença de valores ausentes. Suponha que você tenha um vetor: y <- c(1, 2, 3, NA)
+
+Observe como a função is.na () funciona em um objeto. Ele retorna um objeto do mesmo tamanho, com as entradas substituídas por TRUE se o elemento for um valor ausente e FALSE se o elemento não for um valor ausente.
+
+Aqui, a liderança [, 6: 10] limitou o quadro de dados às colunas 6 a 10, e is.na () identificou quais valores estão faltando.
+
+NOTA::: Os valores ausentes são considerados não comparáveis, mesmo para eles próprios. Isso significa que você não pode usar operadores de comparação para testar a presença de valores ausentes. Por exemplo, o teste lógico myvar == NA nunca é TRUE. Em vez disso, você deve usar funções de valores ausentes, como as desta seção, para identificar os valores ausentes em objetos de dados R.
+
+```{r}
+
+# Exemplo para valores ausentes em dataframe 
+
+y <- c(1, 2, 3, NA)
+
+is.na(y)
+
+# is.na(y) == c(FALSE, FALSE, FALSE, TRUE)
+
+### Aplicação da função is.na ( ) em dataframe 
+
+is.na(leadership[ , 6:10])
+
+### Recodificando valores ausentes
+
+leadership$age[leadership$age == 99] <- NA
+
+```
+
+# Excluindo valores ausentes (missigns) das análises
+
+Depois de identificar os valores ausentes, você precisa eliminá-los de alguma forma antes de analisar seus dados mais detalhadamente. 
+
+O motivo é que as expressões aritméticas e funções que contêm valores omissos produzem valores omissos. Por exemplo, considere o seguinte código:
+
+
+```{r}
+
+# Operações com valores ausentes 
+
+x <- c(1, 2, NA, 3)
+y <- x[1] + x[2] + x[3] + x[4]
+z <- sum(x)
+
+# Ambos y e z serão NA (ausentes) porque o terceiro elemento de x está ausente. Felizmente, a maioria das funções numéricas tem uma opção na.rm = TRUE que remove os valores ausentes antes dos cálculos e aplica a função aos valores restantes:
+
+x <- c(1, 2, NA, 3)
+y <- sum(x, na.rm=TRUE)
+  
+```
+
+Ao usar funções com dados incompletos, certifique-se de verificar como essa função lida com dados ausentes, consultando sua ajuda online (por exemplo, help (sum)). A função sum () é apenas uma das muitas funções que consideraremos no capítulo 5.
+
+As funções permitem que você transforme os dados com flexibilidade e facilidade. Você pode remover qualquer observação com dados ausentes usando a função na.omit (). na.omit () exclui todas as linhas com dados ausentes. Vamos aplicar isso ao nosso conjunto de dados de liderança na lista a seguir:
+
+
+```{r}
+
+# Exercício: Usando na.omit () para excluir observações incompletas
+
+leadership
+
+newdata <- na.omit(leadership)
+newdata
+```
+
+Quaisquer linhas contendo dados ausentes são excluídas da liderança antes que os resultados sejam salvos em newdata. A exclusão de todas as observações com dados ausentes (chamada exclusão listwise) é um dos vários métodos de tratamento de conjuntos de dados incompletos. Se houver apenas alguns valores ausentes ou se eles estiverem concentrados em um pequeno número de observações, a exclusão listwise pode fornecer uma boa solução para o problema dos valores ausentes. Mas se os valores ausentes estiverem espalhados pelos dados, ou houver uma grande quantidade de dados ausentes em um pequeno número de variáveis, a exclusão listwise pode excluir uma porcentagem substancial de seus dados.
+
+
+# Valores de data 
+
+As datas são normalmente inseridas em R como cadeias de caracteres e, em seguida, traduzidas em variáveis de data que são armazenadas numericamente. A função as.Date () é usada para fazer esta tradução. A sintaxe é as.Date (x, "input_format"), onde x são os dados do caractere e input_format fornece o formato apropriado para a leitura da data.
+
+%d = Dias (0-31 ou 1-31)
+%a = Dia da semana (abreviado)
+%A = Dia da semana (não-abreviado)
+%m = Meses (0-12)
+%b = Meses (abreviado)
+%B = Meses (não-abreviado)
+%y = Ano (07, 09, 10)
+%y = Ano (2007, 2009, 2010)
+
+O formato padrão para inserir datas é aaaa-mm-dd. A declaração...
+
+Usa o formato especificado para ler a variável de caractere e substituí-la no quadro de dados como uma variável de data. 
+
+Uma vez que a variável está no formato de data, você pode analisar e plotar as datas usando uma ampla gama de técnicas analíticas abordadas em capítulos posteriores. 
+
+Duas funções são especialmente úteis para dados de registro de data e hora.
+
+Sys.Date () retorna a data de hoje e a date () retorna a data e hora atuais. Enquanto escrevo isto, é 12 de dezembro de 2010 às 16h28. Portanto, a execução dessas funções produz
+
+```{r}
+
+# Inserção e criação de data
+
+mydates <- as.Date(c("2007-06-22", "2004-02-13"))
+
+# Lê os dados usando um formato mm / dd / aaaa. Em nosso conjunto de dados de liderança, a data é codificada como uma variável de caractere no formato mm / dd / aa. Portanto: 
+
+myformat <- "%m/%d/%y"
+leadership$date <- as.Date(leadership$date, myformat)
+
+# Funções de visualização de dada 
+
+Sys.Date () 
+date()
+
+
+# Você pode usar a função format (x, format = "output_format") para datas de saída em um formato especificado e para extrair porções de datas:
+
+today <- Sys.Date()
+format(today, format="%B %d %Y")
+format(today, format="%A")
+
+```
+
+A função format () recebe um argumento (uma data neste caso) e aplica um formato de saída (neste caso, montado a partir dos símbolos apresentados anteriormente). O resultado importante aqui é que faltam apenas mais dois dias para o fim de semana!
+
+Quando R armazena datas internamente, elas são representadas como o número de dias desde 1º de janeiro de 1970, com valores negativos para datas anteriores. Isso significa que você pode realizar operações aritméticas com eles. Por exemplo:
+
+```{r}
+
+# Exemplo de operações com datas 
+
+startdate <- as.Date("2004-02-13")
+enddate <- as.Date("2011-01-22")
+
+days <- enddate - startdate
+days
+
+# Exibe o número de dias entre 13 de fevereiro de 2004 e 22 de janeiro de 2011.
+
+## Finalmente, você também pode usar a função difftime () para calcular um intervalo de tempo e expressá-lo como segundos (seconds), minutos (minutes), horas (hours), dias (days) ou semanas (weeks).
+
+### Suponhamos que eu nasci em 12 de outubro de 1956. Quantos anos eu tenho?
+
+today <- Sys.Date()
+dob <- as.Date("1956-10-12")
+A
+
+difftime(today, dob, units="secs")
+difftime(today, dob, units="mins")
+difftime(today, dob, units="hours")
+difftime(today, dob, units="days")
+difftime(today, dob, units="weeks")
+
+# Conversão de datas em variáveis de caracteres
+
+strDates <- as.character(enddate)
+strDates
+```
+
+# Conversão de datas em variáveis de caracteres
+
+Embora menos comumente usado, você também pode converter variáveis de data em variáveis de caractere. Os valores de data podem ser convertidos em valores de caracteres usando a função as.character (): 
+
+strDates <- as.character(dates)
+
+A conversão permite que você aplique uma gama de funções de caractere aos valores de dados (subconjunto (subsetting), substituição (replacement), concatenação (concatenation), etc.).
+
+# Indo Além 
+
+Para saber mais sobre como converter dados de caracteres em datas, dê uma olhada em help (as.Date) e help (strftime).
+
+Para saber mais sobre a formatação de datas e horas, consulte a ajuda  help(ISOdatetime). 
+
+O pacote "lubridate" contém várias funções que simplificam o trabalho com datas, incluindo funções para identificar e analisar dados de data e hora, extrair componentes de data e hora (por exemplo, anos, meses, dias, etc.) e realizar cálculos aritméticos na data e tempo. 
+
+Se você precisar fazer cálculos complexos com datas, o pacote "fCalendar" também pode ajudar. Ele fornece uma infinidade de funções para lidar com datas, pode lidar com vários fusos horários ao mesmo tempo e fornece recursos sofisticados
+manipulações de calendário que reconhecem dias úteis, fins de semana e feriados.
+
+Pacotes e Funções
+
+1) lubridate
+2) fCalendar
+3) as.Date e strftime
+
+# Tipos de Conversão de Dados 
+
+Na seção anterior, discutimos como converter dados de caracteres em valores de data e vice-versa. R fornece um conjunto de funções para identificar o tipo de dados de um objeto e convertê-lo em um tipo de dados diferente. 
+
+As conversões de tipo em R funcionam de maneira semelhante às de outras linguagens de programação estatística. Por exemplo, adicionar uma sequência de caracteres a um vetor numérico converte todos os elementos do vetor em valores de caracteres. Você pode usar as funções listadas abaixo para testar e converter:
+
+Tipo de conversão por função (Teste/Conversão)
+
+is.numeric( ) = as.numeric( )
+is.character ( ) = as.character ( )
+is.vector ( ) = as.vector ( )
+is.matrix ( ) = as.matrix ( )
+is.data.frame ( ) = as.data.frame ( )
+is.factor ( ) = as.factor ( )
+is.logical ( ) = as.logical ( )
+
+```{r}
+
+# Exemplo de conversão de um tipo de dados para outro
+
+a <- c(1, 2, 3)
+a
+
+is.numeric(a)
+
+a <- as.character(a)
+a
+
+is.numeric(a)
+
+is.vector(a)
+
+is.character(a)
+
+```
+
+Quando combinada com os controles de fluxo (como if-then) que discutiremos no capítulo 5, a função is.datatype () pode ser uma ferramenta poderosa, permitindo que você manipule dados de maneiras diferentes, dependendo de seu tipo.
+
+Além disso, algumas funções R requerem dados de um tipo específico (caractere ou numérico, matriz ou quadro de dados) e o as.datatype () permitirá que você transforme seus dados no formato necessário antes das análises.
+
+# Classificação dos Dados (Sorting Data)
+
+
+Às vezes, a exibição de um conjunto de dados em uma ordem de classificação pode informar um pouco sobre os dados. 
+
+Por exemplo, quais gerentes são mais respeitosos? 
+
+Para classificar um quadro de dados em R, use a função order ().
+
+Por padrão, a ordem de classificação é crescente.Anexe a variável de classificação com um sinal de menos para indicar uma ordem decrescente. 
+
+Os exemplos a seguir ilustram a classificação com o quadro de dados de liderança.
+
+A declaração: 
+
+newdata <- leadership[order(leadership$age),]
+
+cria um novo conjunto de dados contendo linhas classificadas do gerente mais jovem ao gerente mais antigo. A declaração:
+
+attach(leadership)
+newdata <- leadership[order(gender, age), ]
+detach(leadership)
+
+Classifica as linhas em feminino seguido por masculino, e do mais novo ao mais velho dentro de cada gênero. 
+Finalmente:
+
+attach(leadership)
+newdata <- leadership[order(gender, -age), ]
+detach(leadership)
+
+Classifica as linhas por gênero e, em seguida, do gerente mais velho para o mais jovem em cada gênero.
+
+```{r}
+
+# Classificação dos dados 
+
+newdata <- leadership[order(leadership$age),]
+newdata
+
+attach(leadership)
+newdata <- leadership[order(gender, age), ]
+detach(leadership)
+
+newdata
+
+attach(leadership)
+newdata <- leadership[order(gender, -age), ]
+detach(leadership)
+
+newdata
+
+```
+
+# Adicionando colunas (Merge)
+
+Para mesclar dois quadros de dados (conjuntos de dados) horizontalmente, você usa a função merge (). Na maioria dos casos, dois quadros de dados são unidos por uma ou mais variáveis-chave comuns (ou seja, uma união interna). Por exemplo:
+
+total <- merge(dataframeA, dataframeB, by="ID")
+
+Mesclar dataframeA e dataframeB por ID. De forma similar:
+
+total <- merge(dataframeA, dataframeB, by=c("ID","Country"))
+
+Mescla os dois quadros de dados por ID e país. Junções horizontais como essa são normalmente usadas para adicionar variáveis a um quadro de dados.
+
+Nota::: Agregação de dados = A + B 
+
+Se você estiver unindo duas matrizes ou quadros de dados horizontalmente e não precisa especificar uma chave comum, você pode usar a função cbind (): 
+
+total <- cbind(A, B)
+
+Esta função irá concatenar horizontalmente os objetos A e B. Para que a função funcione corretamente, cada objeto deve ter o mesmo número de linhas e ser classificado na mesma ordem.
+
+cbind => agrega dados horizontalmente
+rbind => agrega dados verticalmente
+
+# Adicionando linhas (Merge)
+
+Para unir dois quadros de dados (conjuntos de dados) verticalmente, use a função rbind ():
+
+total <- rbind(dataframeA, dataframeB)
+
+Os dois frames de dados devem ter as mesmas variáveis, mas não precisam estar na mesma ordem. Se dataframeA tem variáveis que dataframeB não tem, então, antes de juntá-las, faça um dos seguintes: 
+
+1) Exclua as variáveis extras no dataframe
+2) Crie as variáveis adicionais no dataframeB e defina-as como NA (ausente)
+
+A concatenação vertical é normalmente usada para adicionar observações a um quadro de dados.
+
+```{r}
+
+# Merge de banco de dados (dataframes)
+
+total <- merge(dataframeA, dataframeB, by="ID")
+total <- merge(dataframeA, dataframeB, by=c("ID","Country"))
+
+# Merge de banco de dados (dataframes) de forma horizontal
+
+total <- cbind(A, B)
+
+# Merge de banco de dados (dataframes) de forma vertical
+
+total <- rbind(dataframeA, dataframeB)
+
+```
+
+# Subsetting datasets
+
+R possui recursos de indexação poderosos para acessar os elementos de um objeto. Esses recursos podem ser usados para selecionar e excluir variáveis, observações ou ambos. As seções a seguir demonstram vários métodos para manter ou excluir variáveis e observações.
+
+# 1) Selecionando (mantendo) variáveis
+
+É uma prática comum criar um novo conjunto de dados a partir de um número limitado de variáveis escolhidas de um conjunto de dados maior. 
+
+No capítulo 2, você viu que os elementos de um quadro de dados são acessados usando a notação dataframe[row indices, column indices]. Você pode usar isso para selecionar variáveis. Por exemplo:
+
+newdata <- leadership[, c(6:10)]
+
+seleciona as variáveis q1, q2, q3, q4 e q5 do quadro de dados de liderança e os salva no novo quadro de dados. Deixar os índices de linha em branco (,) seleciona todas as linhas por padrão.
+
+As declarações: 
+
+myvars <- c("q1", "q2", "q3", "q4", "q5")
+newdata <-leadership[myvars]
+
+realizar a mesma seleção de variável. Aqui, os nomes das variáveis (entre aspas) foram inseridos como índices de coluna, selecionando assim as mesmas colunas.
+
+Finalmente, você poderia ter usado: 
+
+myvars <- paste ("q", 1: 5, sep = "")
+newdata <- liderança [myvars]
+
+Este exemplo usa a função paste () para criar o mesmo vetor de caracteres do exemplo anterior. A função paste () será abordada no capítulo 5.
+
+```{r}
+
+# Exemplo de seleção e manutenção de variáveis de três formas 
+
+newdata <- leadership[, c(6:10)]
+newdata
+
+myvars <- c("q1", "q2", "q3", "q4", "q5")
+newdata <-leadership[myvars]
+newdata
+
+myvars <- paste("q", 1:5, sep = "")
+myvars
+
+newdata <- leadership[myvars]
+newdata
+
+```
+
+
+# 2) Excluindo (descartando) variáveis
+
+Existem muitos motivos para excluir variáveis. Por exemplo, se uma variável tem vários valores omissos, você pode querer descartá-la antes de outras análises. 
+
+Vejamos alguns métodos de exclusão de variáveis. Você pode excluir as variáveis q3 e q4 com as declarações:
+
+myvars <- names(leadership) %in% c("q3", "q4")
+newdata <- leadership[!myvars]
+
+Sabendo que q3 e q4 são a 8ª e a 9ª variáveis, você pode excluí-los com a declaração: 
+
+newdata <- leadership[c(-8,-9)]
+
+Isso funciona porque incluir um sinal de menos (-) antes de um índice de coluna exclui essa coluna. Finalmente, a mesma exclusão pode ser realizada via:
+
+Finalmente, a mesma exclusão pode ser realizada via: 
+
+leadership$q3 <- leadership$q4 <- NULL
+
+Aqui você define as colunas q3 e q4 como indefinidas(NULL). Observe que NULL não é o mesmo que NA(ausente).
+
+Eliminar variáveis é o oposto de manter variáveis. 
+
+A escolha dependerá de qual é mais fácil de codificar. 
+
+Se houver muitas variáveis a serem eliminadas, pode ser mais fácil manter as restantes ou vice-versa.
+
+```{r}
+
+# Excluindo variáveis 
+
+myvars <- names(leadership) %in% c("q3", "q4")
+
+newdata <- leadership[!myvars]
+newdata
+
+newdata <- leadership[c(-8,-9)]
+newdata
+
+
+leadership$q3 <- leadership$q4 <- NULL
+newdata
+
+```
+
+# Selecionando observações
+
+Selecionar ou excluir observações (linhas) é normalmente um aspecto chave para uma preparação e análise de dados bem-sucedidas. Vários exemplos são fornecidos na lista a seguir.
+
+# 1) Selecionando observações
+
+newdata <- leadership[1:3, ]
+
+newdata <- leadership[which(leadership$gender=="M" & leadership$age > 30), ]
+
+
+attach(leadership)
+
+newdata <- leadership[which(gender=='M' & age > 30), ]
+
+detach(leadership)
+
+
+```{r}
+
+# Selecionando observações 
+
+newdata <- leadership[1:3, ]
+newdata
+
+newdata <- leadership[which(leadership$gender=="M" & leadership$age > 30), ]
+newdata
+
+attach(leadership)
+newdata <- leadership[which(gender=='M' & age > 30), ]
+detach(leadership)
+
+```
+
+Em cada um desses exemplos, você fornece os índices de linha e deixa os índices de coluna em branco (portanto, escolhendo todas as colunas). 
+
+No primeiro exemplo, você pede as linhas 1 a 3 (as três primeiras observações).
+
+No segundo exemplo, você seleciona todos os homens com mais de 30 anos. Vamos quebrar esta linha de código para entendê-la:
+
+No início deste capítulo, sugeri que você pode limitar suas análises às observações coletadas entre 1º de janeiro de 2009 e 31 de dezembro de 2009.
+
+Como você pode fazer isso? Aqui está uma solução:
+
+```{r}
+
+# Selecionando observações 
+
+leadership$date <- as.Date(leadership$date, "%m/%d/%y")
+leadership$date
+
+startdate <- as.Date("2009-01-01")
+startdate
+
+enddate <- as.Date("2009-10-31")
+enddate
+
+newdata <- leadership[which(leadership$date >= startdate & leadership$date <= enddate), ]
+
+newdata
+
+```
+
+Converta os valores de data lidos originalmente como valores de caracteres em valores de data usando o formato mm/dd/aa. 
+
+Em seguida, crie datas de início e término. Como o padrão para a função as.Date () é aaaa-mm-dd, você não precisa fornecê-la aqui. 
+
+Por fim, selecione os casos que atendem aos critérios desejados, como fez no exemplo anterior.
+
+# A função subset ()
+
+Os exemplos nas duas seções anteriores são importantes porque ajudam a descrever as maneiras pelas quais os vetores lógicos e os operadores de comparação são interpretados em R.
+
+Compreender como esses exemplos funcionam o ajudará a interpretar o código R em geral. Agora que você fez as coisas da maneira mais difícil, vamos dar uma olhada em um atalho. A função de subconjunto é provavelmente a maneira mais fácil de selecionar variáveis e observações. 
+
+Aqui estão dois exemplos:
+
+newdata <- subset(leadership, age >= 35 | age < 24, select= c(q1, q2, q3, q4))
+
+newdata <- subset(leadership, gender=="M" & age > 25, select = gender:q4) 
+
+```{r}
+
+# Criando um subcobjubto de dados = função subconjunto 
+
+newdata <- subset(leadership, age >= 35 | age < 24, select= c(q1, q2, q3, q4))
+newdata 
+
+newdata <- subset(leadership, gender=="M" & age > 25, select = gender:q4) 
+newdata
+
+```
+
+No primeiro exemplo, você seleciona todas as linhas que têm um valor de idade maior ou igual a 35 ou idade menor que 24.
+
+Você mantém as variáveis q1 a q4. No segundo exemplo, você seleciona todos os homens com mais de 25 anos e mantém as variáveis de gênero até q4 (gênero, q4 e todas as colunas entre eles). 
+
+Você viu o operador de dois pontos de: até no capítulo 2. 
+
+Aqui, ele fornece todas as variáveis em um quadro de dados entre a variável de e a variável para, inclusive.
+
+# Amostras aleatórias
+
+A amostragem de conjuntos de dados maiores é uma prática comum em mineração de dados e aprendizado de máquina.
+
+Por exemplo, você pode desejar selecionar duas amostras aleatórias, criando um modelo preditivo de uma e validando sua eficácia na outra. 
+
+A função sample( ) permite que você obtenha uma amostra aleatória (com ou sem substituição) de tamanho(n) de um conjunto de dados. 
+
+Você poderia pegar uma amostra aleatória de tamanho 3 do conjunto de dados de liderança usando a declaração:
+
+
+```{r}
+
+# Random samples
+
+mysample <- leadership[sample(1:nrow(leadership), 3, replace=FALSE)]
+mysample
+
+```
+
+O primeiro argumento para a função sample () é um vetor de elementos para escolher.
+
+Aqui, o vetor é 1 elevado ao número de observações no quadro de dados.
+
+O segundo argumento é o número de elementos a serem selecionados, e o terceiro argumento indica amostragem sem substituição. 
+
+A função sample( ) retorna os elementos de amostra aleatória, que são então usados para selecionar linhas do quadro de dados. 
+
+INDO ALÉM:::  
+
+R tem amplas instalações para amostragem, incluindo desenho e calibração de amostras de pesquisas (consulte o pacote de amostragem) e análise de dados de pesquisas complexas (consulte o pacote de pesquisas).
+
+Outros métodos que dependem de amostragem, incluindo estatísticas de bootstrap e reamostragem, são descritos no capítulo 11.
+
+# Usando instruções SQL para manipular quadros de dados
+
+Até agora, você tem usado declarações R para manipular dados. Mas muitos analistas de dados chegam ao R bem versados em Structured Query Language (SQL). 
+
+Seria uma pena perder todo esse conhecimento acumulado. Portanto, antes de terminar, deixe-me mencionar brevemente a existência do pacote sqldf. (Se você não estiver familiarizado com SQL, sinta-se à vontade para pular esta seção).
+
+Depois de baixar e instalar o pacote (install.packages ("sqldf")), você pode usar a função sqldf() para aplicar instruções SQL SELECT a quadros de dados. 
+
+Dois exemplos são dados na lista a seguir: 
+
+```{r}
+
+# Instruções SQL Select ao quadro de dados
+
+install.packages("sqldf")
+library(sqldf)
+
+# Exemplo1
+
+newdf <- sqldf("select * from mtcars where carb=1 order by mpg", 
+               row.names = TRUE)
+newdf
+
+# Exemplo2
+
+sqldf("select avg(mpg) as avg_mpg, avg(disp) as avg_disp, gear from mtcars where cyl in (4,6) group by gear")
+
+```
+
+No primeiro exemplo1, você selecionou todas as variáveis (colunas) do quadro de dados mtcars, manteve apenas automóveis (linhas) com um carburador (carb), classificou os automóveis em ordem crescente por mpg e salvou os resultados como o quadro de dados newdf. A opção row.names = TRUE carregava os nomes das linhas do quadro de dados original para o novo.
+
+No segundo exemplo2, você imprimiu a média de mpg e disp dentro de cada nível de marcha para automóveis com quatro ou seis cilindros (cil). 
+
+Usuários experientes em SQL acharão o pacote sqldf um complemento útil para o gerenciamento de dados em R. 
+
+Veja a página inicial do projeto: http://code.google.com/p/sqldf.
+
+# Conclusões 
+
+Cobrimos uma grande quantidade de terreno neste capítulo. Vimos como R armazena valores ausentes e de data e exploramos várias maneiras de lidar com eles. Você aprendeu como determinar o tipo de dados de um objeto e como convertê-lo em outros tipos. Você usou fórmulas simples para criar novas variáveis e recodificar as variáveis existentes. 
+
+Eu mostrei como classificar seus dados e renomear suas variáveis. Você aprendeu como mesclar seus dados com outros conjuntos de dados horizontalmente (adicionando variáveis) e verticalmente (adicionando observações). Finalmente, discutimos como manter ou descartar variáveis e como selecionar observações com base em uma variedade de critérios.
+
+No próximo capítulo, veremos a miríade de funções aritméticas, de caráter e estatísticas que R disponibiliza para criar e transformar variáveis. Depois de explorar as maneiras de controlar o fluxo do programa, você verá como escrever suas próprias funções.
+
+Também exploraremos como você pode usar essas funções para agregar e resumir seus dados. Ao final do capítulo 5, você terá a maioria das ferramentas necessárias para gerenciar conjuntos de dados complexos. 
