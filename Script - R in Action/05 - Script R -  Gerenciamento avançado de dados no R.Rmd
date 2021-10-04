@@ -1,0 +1,1043 @@
+---
+R Language Course
+Author: Álvaro Robério de Souza Sá 
+Filiation: Universidade Federal de Pernambuco
+Reference: R in Action - Robert I. Kabacoff 
+Repository: 
+---
+
+# CAPTION 05  - Advanced data management - Gerenciamento avançado de dados
+
+Este capítulo cobre:
+
+1) Funções matemáticas e estatísticas
+2) Funções de caracteres
+3) Loop e execução condicional
+4) Funções escritas pelo usuário
+5) Maneiras de agregar e remodelar dados
+
+No capítulo 4, revisamos as técnicas básicas usadas para gerenciar conjuntos de dados em R. Neste capítulo, vamos nos concentrar em tópicos avançados.
+
+Na primeira parte, faremos um tour rápido pelas muitas funções de R para matemática, estatística e manipulação de caracteres. Para dar relevância a esta seção, começamos com um problema de gerenciamento de dados que pode ser resolvido usando essas funções. 
+
+Depois de abordar as funções em si, veremos uma possível solução para o problema de gerenciamento de dados. A seguir, abordamos como escrever suas próprias funções para realizar tarefas de gerenciamento e análise de dados. 
+
+Primeiro, você explorará maneiras de controlar o fluxo do programa, incluindo loop e execução de instrução condicional. Em seguida, investigaremos a estrutura das funções escritas pelo usuário e como invocá-las depois de criadas. 
+
+Em seguida, veremos maneiras de agregar e resumir dados, junto com métodos de remodelagem e reestruturação de conjuntos de dados. Ao agregar dados, você pode especificar o uso de qualquer função apropriada incorporada ou escrita pelo usuário para realizar o resumo, de modo que os tópicos que você aprendeu nas duas primeiras partes do capítulo proporcionarão um benefício real.
+
+
+# 1. Funções numéricas e de caracteres 
+
+
+Nesta seção, revisaremos as funções em R que podem ser usadas como blocos de construção básicos para a manipulação de dados. 
+
+Eles podem ser divididos em funções numéricas (matemáticas, estatísticas, probabilidade) e de caracteres. Depois de revisar cada tipo, vou mostrar como aplicar funções às colunas (variáveis) e linhas (observações) de matrizes e quadros de dados. 
+
+# 1.1 Funções matemáticas
+
+abs(x)     | Valor absoluto abs(-4) retorna 4. 
+
+sqrt(x)    | Raiz quadrada sqrt(25) retorna 5. Isso é o mesmo que 25^(0,5).
+
+ceiling(x) | O menor inteiro não menor que x ceiling(3.475) retorna 4.
+
+floor(x)   | Maior inteiro não maior que x floor(3.475) retorna 3.
+
+trunc(x)   | Inteiro formado por valores truncados em x em direção a 0 trunc(5.99) retorna 5.
+
+round(x, digits=n) | Arredonde x para o número especificado de casas decimais round(3.475, dígitos = 2)                      retorna 3.48.
+
+signif(x, digits=n ) | Arredonde x para o número especificado de dígitos significativos signif(3,475,                         digits=2) retorna 3.5.
+
+cos(x) , sin(x) , tan(x)    | Cosseno, seno e tangente | cos(2) retorna –0,416.
+
+acos(x) , asin(x) , atan(x) | Arco-cosseno, arco-seno e arco-tangente acos(-0,416) retorna 2.
+
+cosh(x) , sinh(x) , tanh(x) | Cosseno hiperbólico, seno e tangente | sinh(2) retorna 3,627.
+
+acosh(x) , asinh(x) , atanh(x) | Arco-cosseno hiperbólico, arco-seno e arco-tangente asinh (3.627)                                      retorna 2.
+
+log(x,base=n) | Logaritmo de x para a base n (por conveniência)
+
+log(x)        | log(x) é o logaritmo natural
+
+log10(x)      | log10(x) é o logaritmo comum; log (10) retorna 2,3026; log10 (10) retorna 1.
+
+exp(x)        | Função exponencial exp(2.3026) retorna 10.
+
+
+A transformação de dados é um dos principais usos para essas funções.
+
+Por exemplo, você costuma transformar variáveis distorcidas positivamente, como renda, em uma escala logarítmica antes de análises adicionais.
+
+As funções matemáticas também serão usadas como componentes em fórmulas, em funções de plotagem (por exemplo, x versus sin (x)) e na formatação de valores numéricos antes da impressão.
+
+Os exemplos aplicam funções matemáticas a escalares (números individuais). Quando essas funções são aplicadas a vetores numéricos, matrizes ou quadros de dados, elas operam em cada valor individual. 
+
+Por exemplo, sqrt (c (4, 16, 25)) retorna c (2, 4, 5).
+
+# 1.2 Funções estatísticas
+
+As funções estatísticas comuns são apresentadas a seguir. Muitas dessas funções têm parâmetros opcionais que afetam o resultado. Por exemplo:
+
+y <- mean(x)
+
+Fornece a média aritmética dos elementos no objeto x, e:
+
+z <- mean(x, trim = 0.05, na.rm=TRUE)
+
+fornece a média aparada, descartando os 5 por cento mais altos e mais baixos das pontuações e
+quaisquer valores ausentes. Use a função help () para aprender mais sobre cada função e
+seus argumentos.
+
+Principais funções estatísticas: 
+
+mean (x)  | Quer dizer mean(c (1,2,3,4)) retorna 2,5.
+
+median(x) | A mediana median(c (1,2,3,4)) retorna 2,5. 
+
+sd(x)     | Desvio padrão sd(c (1,2,3,4)) retorna 1,29.
+
+var(x)    | Variância var(c (1,2,3,4)) retorna 1,67.
+
+mad(x)    | Desvio médio absoluto mad(c (1,2,3,4)) retorna 1,48.
+
+quantile(x, probs) | Quantis onde x é o vetor numérico onde os quantis são desejados e probs é um vetor numérico com probabilidades em [0,1]. 30º e 84º percentis de x | y <- quantil (x, c (0,3, 0,84)). 
+
+range(x)  | Faixa x <- c (1,2,3,4) | range(x) retorna c(1,4) | diff(range(x)) retorna 3.
+
+sum(x)    | sum(c (1,2,3,4)) retorna 10.
+
+diff(x, lag=n) | Diferenças defasadas, com defasagem indicando qual defasagem usar. O padrão lag é 1. | x <- c (1, 5, 23, 29) | diff (x) retorna c (4, 18, 6).
+
+min(x)    | Mínimo min(c (1,2,3,4)) retorna 1.
+
+max(x)    | Máximo max(c (1,2,3,4)) retorna 4.
+
+scale(x, center=TRUE, scale=TRUE) | Centro da coluna (centro = VERDADEIRO) ou padronizar (centro = VERDADEIRO, escala = VERDADEIRO) objeto de dados x. Um exemplo é dado na Listagem 5.6.
+
+
+```{r}
+
+# Calculando estatísticas 
+
+x <- c(1:8)
+
+# Média
+
+mean(x)
+
+# Desvio-Padrão
+
+sd(x)
+
+# Quantidade de observações (itens)
+
+n <- length(x)
+
+
+# Média 
+
+meanx <- sum(x)/n
+meanx
+
+# Soma dos Quadrados 
+
+css <- sum((x-meanx)^2)
+css
+
+# Desvio-Padrão 
+
+sdx <- sqrt (css/(n-1))
+sdx
+
+```
+
+# Padronizando dados 
+
+Por padrão, a função scale ( ) padroniza as colunas especificadas de uma matriz ou quadro de dados para uma média de 0 e um desvio padrão de 1:
+
+newdata <- scale(mydata)
+
+Para padronizar cada coluna para uma média e desvio padrão arbitrários, você pode usar um código semelhante ao seguinte:
+
+newdata <- scale(mydata)*SD + M
+
+onde M é a média desejada e SD é o desvio padrão desejado. Usando a função scale () em colunas não numéricas produzirá um erro. 
+
+Para padronizar uma coluna específica em vez de uma matriz inteira ou quadro de dados, você pode usar códigos como: 
+
+newdata <- transform(mydata, myvar = scale(myvar)*10+50)
+
+Este código padroniza a variável myvar para uma média de 50 e desvio padrão de
+10. Usaremos a função scale () na solução para o desafio de gerenciamento de dados adiante. 
+
+# 1.3 Funções de Probabilidade 
+
+Você pode se perguntar por que as funções de probabilidade não estão listadas com as funções estatísticas (estava realmente incomodando você, não estava?).
+
+Embora as funções de probabilidade sejam estatísticas por definição, elas são únicas o suficiente para merecer sua própria seção.
+
+As funções de probabilidade são freqüentemente usadas para gerar dados simulados com características conhecidas e para calcular valores de probabilidade dentro de funções estatísticas escritas pelo usuário. 
+
+Em R, funções de probabilidade assumem a forma:
+
+[dpqr]distribution_abbreviation()
+
+onde a primeira letra se refere ao aspecto da distribution retornada:
+
+d = densidade
+p = função de distribuição 
+q = função de quantile
+r = geração aleatória (random / desvios aleatórios)
+
+Lista de distribuições // Código e Nome 
+
+beta = Beta 
+binom =  Binomial 
+cauchy = Cauchy
+chisq = Chi-Squared
+exp = Exponential 
+f = F
+gamma = Gamma 
+geom = Geometric
+hyper = Hypergeometric 
+lnorm = Lognormal 
+logis = Logistic 
+multinom = Multinomial 
+nbinom = Negative Binomial 
+norm = Normal 
+pois = Poisson 
+signrank = Wilcoxon Signed Rank 
+t = T
+unif = Uniform 
+weibull = Weibull 
+wilcox = Wilcoxon Rank Sum 
+
+Para ver como eles funcionam, vamos dar uma olhada nas funções relacionadas à distribuição normal. Se você não especificar uma média e um desvio padrão, a distribuição normal padrão é assumida (média = 0, dp = 1). 
+
+Exemplos das funções de densidade (dnorm), distribuição (pnorm), quantil (qnorm) e geração de desvio aleatório (rnorm) são dados na tabela 5.5.
+
+
+```{r}
+
+# Exemplos de distribuições 
+
+## Trace a curva normal padrão no intervalo [-3,3]
+
+x <- pretty(c(-3, 3), 30)
+y <- dnorm(x)
+
+plot(x, y, 
+  type = "l",
+  xlab = "Normal Deviate", 
+  ylab = "Density", 
+  yaxs = "i"
+  )
+
+## Qual é a área sob a curva normal padrão para à esquerda de z = 1,96? R = 0.975
+
+pnorm(1.96)
+
+## Qual é o valor do 90º percentil de uma distribuição normal com uma média de 500 e um desvio-padrão de 100? R = 628.1552
+
+qnorm(.9, mean=500, sd=100)
+
+## Gere 50 desvios normais aleatórios com uma média de 50 e um desvio padrão de 10.
+
+rnorm(50, mean=50, sd=10)
+
+```
+
+Não se preocupe se as opções da função de plotagem não forem familiares. 
+
+Eles são abordados em detalhes em outra seção; 
+
+pretty () é explicado posteriormente. 
+
+# CONFIGURANDO A SEMENTE PARA GERAÇÃO DE NÚMERO ALEATÓRIO
+
+Cada vez que você gera desvios pseudo-aleatórios, uma semente diferente e, portanto, resultados diferentes são produzidos. 
+
+Para tornar seus resultados reproduzíveis, você pode especificar a semente explicitamente, usando a função set.seed (). Um exemplo é dado na próxima lista. 
+
+Aqui, a função runif () é usada para gerar números pseudoaleatórios a partir de uma distribuição uniforme no intervalo de 0 a 1.
+
+```{r}
+
+# Gerando números pseudo-aleatórios a partir de uma distribuição uniforme
+
+runif(5)
+
+set.seed (1234)
+runif(5)
+
+set.seed(1234)
+runif(5)
+
+```
+
+
+Ao definir a semente manualmente, você pode reproduzir seus resultados. Essa capacidade pode ser útil na criação de exemplos que você pode acessar no futuro e compartilhar com outras pessoas. 
+
+# GERANDO DADOS NORMAIS MULTIVARIADOS
+
+Em pesquisas de simulação e estudos de Monte Carlo, você geralmente deseja desenhar dados de distribuição normal multivariada com um determinado vetor de média e matriz de covariância. 
+
+A função mvrnorm( ) no pacote "MASS" torna isso fácil. A chamada de função é:
+
+mvrnorm(n, mean, sigma)
+
+onde (n) é o tamanho de amostra desejado, média é o vetor de médias e sigma é a matriz de variância-covariância (ou correlação). 
+
+Na listagem, você terá uma amostra de 500 observações de uma distribuição normal multivariada de três variáveis com: 
+
+```{r}
+
+library(MASS)
+
+options(digits=3)
+set.seed(1234)
+
+mean <- c(230.7, 146.7, 3.6)
+
+sigma <- matrix(c(15360.8, 6721.2, -47.1,
+                  6721.2, 4700.9, -16.5, 
+                  -47.1, -16.5, 0.3), nrow = 3, ncol = 3)
+
+mydata <- mvrnorm(500, mean, sigma)
+
+mydata <- as.data.frame(mydata)
+
+names(mydata) <- c("y", "x1", "x2")
+
+dim(mydata)
+
+head(mydata, n=10)
+
+```
+
+No exemplo, você define uma semente de número aleatório para que possa reproduzir os resultados posteriormente (q). 
+
+Você específica o vetor médio desejado e a matriz de variância-covariância (w) e gera 500 observações pseudo-aleatórias(e). 
+
+Por conveniência, os resultados são convertidos de uma matriz em um quadro de dados e as variáveis recebem nomes.
+
+Finalmente, você confirma que tem 500 observações e 3 variáveis e imprime as primeiras observações. 
+
+Observe que, como uma matriz de correlação também é uma matriz de covariância, você poderia ter especificado a estrutura de correlações diretamente. 
+
+As funções de probabilidade em R permitem gerar dados simulados, amostrados a partir de distribuições com características conhecidas. 
+
+Os métodos estatísticos que dependem de dados simulados têm crescido exponencialmente nos últimos anos, e você verá vários exemplos deles em capítulos posteriores.
+
+# Funções de personagem
+
+Embora as funções matemáticas e estatísticas operem em dados numéricos, as funções de caracteres extraem informações de dados textuais ou reformatam dados textuais para impressão e relatórios. 
+
+Por exemplo, você pode desejar concatenar o nome e o sobrenome de uma pessoa, garantindo que a primeira letra de cada um seja maiúscula. Ou você pode querer contar as ocorrências de obscenidades em feedback aberto.
+
+```{r}
+
+# Cumprimento de palas => nchar 
+
+x <- c("ab", "cde", "fghij")
+nchar(x[3])
+
+# Extraia ou substitua substrings em um vetor de caracteres
+
+x <- "abcdef"
+
+substr(x, 2, 4)
+
+substr(x, 2, 4) <- "22222" 
+x
+
+# Pesquisa o padrão em x. Se fixed = FALSE, então padrão é uma expressão regular. Se fixed = TRUE, então o pattern é um string de texto. Retorna o índice correspondente: 
+
+grep(pattern, x, ignore.case=FALSE, fixed=FALSE)
+
+grep( "A", c("b", "A", "c"), fixed=TRUE)
+
+# Encontre o padrão em x e substitua por texto de substituição. Se fixed=FALSE, então pattern (padrão) é uma expressão regular. Se fixed=TRUE, então o padrão é uma string de texto. sub("\\s", ".", "Olá") retorna Olá. Nota "\s" é uma expressão regular para encontrar espaços em branco: use "\\s" ao invés porque "\" é o caractere de escape de R. 
+
+
+sub(pattern, replacement, x, ignore.case=FALSE, fixed=FALSE) 
+
+sub("\\s", ".", "Olá")
+
+
+# Divida os elementos do vetor de caracteres x na divisão. Se fixed = FALSE, o padrão é regular expressão. Se fixed = TRUE, então o padrão é um string de texto.
+
+y <- strsplit("abc", "")
+y
+
+unlist(y)[2]
+sapply(y, "[", 2)
+
+# Concatenar strings depois de usar sep string para separe-os.
+
+paste(..., sep="") 
+
+paste("x", 1:3, sep="")
+
+paste("x", 1:3, sep="M")
+
+paste("Today is", date())
+
+# Transformar em Maiúscula 
+
+toupper(x)
+toupper("abc")
+
+# Transformar em Mínuscula 
+
+tolower(x)
+tolower("ABC")
+
+```
+
+Observe que as funções grep ( ), sub ( ) e strsplit ( ) podem pesquisar por uma string de texto (fixed = TRUE) ou uma expressão regular (fixed = FALSE) (FALSE é o padrão). 
+
+As expressões regulares fornecem uma sintaxe clara e concisa para corresponder a um padrão de texto. Por exemplo, a expressão regular ^ [hc]? At corresponde a qualquer string que comece com 0 ou uma ocorrência de h ou c, seguida de at.
+
+A expressão, portanto, corresponde a chapéu, gato e em, mas não a morcego. Para saber mais, consulte a entrada de expressão regular na Wikipedia.
+
+# Outras funções úteis
+
+As funções abaixo também são bastante úteis para gerenciamento e manipulação de dados, mas não se encaixam perfeitamente nas outras categorias.
+
+```{r}
+
+# Comprimento do objeto x
+
+x <- c (2, 5, 6, 9)
+length(x) 
+
+# Gere uma sequência.
+
+seq(from, to, by)
+
+indices <- seq(1,10,2)
+indices
+
+# Repita x n vezes.
+
+rep(x, n) 
+
+y <- rep(1:3, 2)
+y
+
+# Divida a variável contínua x em fator com n níveis. Para criar um fator ordenado, inclua a opção order_result = TRUE
+
+cut(x, n) 
+cut(x, 2)
+
+# Crie pontos de interrupção bonitos. Divide uma variável contínua x em n intervalos, selecionando n + 1 valores arredondados igualmente espaçados. Freqüentemente usado em plotagem.
+
+pretty(x, n)
+pretty(x, 3)
+
+# Concatena os objetos em ... e os envia para a tela ou para um arquivo (se houver um declarado).
+
+cat(… , file ="myfile", append=FALSE) 
+
+firstname <- c("Jane")
+cat("Hello" , firstname, "\n")
+
+name <- "Bob"
+cat( "Hello", name, "\b.\n", "Isn\'t R", "\t", "GREAT?\n")
+
+```
+
+O último exemplo da tabela demonstra o uso de caracteres de escape na impressão. Use \ n para novas linhas, \ t para tabulações, \' para aspas simples, \ b para retrocesso e assim por diante (type ?Quotes for more information). Exemplo acima! 
+
+Observe que a segunda linha é recuada em um espaço. Quando cat concatena objetos para saída, ele separa cada um por um espaço. É por isso que você inclui o caractere de escape backspace (\ b) antes do ponto. Caso contrário, teria produzido “Hello, Bob”.
+
+# Aplicação de funções a matrizes e quadros de dados
+
+Um dos recursos interessantes das funções R é que elas podem ser aplicadas a uma variedade de objetos de dados (escalares, vetores, matrizes, matrizes e quadros de dados). A lista a seguir fornece um exemplo: 
+
+```{r}
+
+# Aplicação de funções a objetos de dados
+
+a <- 5 
+
+# Cálculo da raiz quadrada 
+
+sqrt(a)
+
+# Arredondamento de Valores
+
+b <- c(1.243, 5.654, 2.99)
+round(b)
+
+# Cálculo do logaritmo 
+
+c <- matrix(runif(12), nrow=3)
+c
+
+log(c)
+
+# Cálculo da média 
+
+mean(c)
+
+```
+
+
+Observe que a média da matriz c acima resulta em um escalar (0,354). A função mean ( ) obteve a média de todos os 12 elementos na matriz. 
+
+Mas e se você quisesse os meios de 3 linhas ou os meios de 4 colunas? 
+
+R fornece uma função, apply (), que permite aplicar uma função arbitrária a qualquer dimensão de uma matriz, array ou quadro de dados.
+
+O formato da função de aplicação é: 
+
+apply(x, MARGIN, FUN, ...)
+
+onde x é o objeto de dados, MARGIN é o índice da dimensão, FUN é uma função que você especificar e (...) são quaisquer parâmetros que você deseja passar para FUN. 
+
+Em uma matriz ou quadro de dados MARGIN = 1 indica linhas e MARGIN = 2 indica colunas.
+
+```{r}
+
+# Aplicar uma função às linhas (colunas) de uma matriz
+
+# MARGIN=1 (linhas) // MARGIN=2 (colunas)
+
+mydata <- matrix(rnorm(30), nrow=6)
+mydata
+
+# Média dos valores de uma linha
+
+apply(mydata, 1, mean)
+
+# Média dos valores de uma coluna
+
+apply(mydata, 2, mean)
+
+# Calcular as médias da coluna aparada, isto é, 60% da amostra
+
+apply(mydata, 2, mean, trim=0.2)
+
+```
+
+Enquanto apply () aplica uma função nas margens de um array, lapply () e sapply () aplicam uma função em uma lista.
+
+Você verá um exemplo de sapply (que é uma versão amigável do lapply) na próxima seção. Agora você tem todas as ferramentas de que precisa para resolver o desafio dos dados, a seguir. 
+
+# Desafio de Gerenciamento de Dados
+
+Seu desafio é combinar as pontuações dos testes da matéria em um único indicador de desempenho para cada aluno, dar nota a cada aluno de A a F com base em sua posição relativa (20 por cento principais, 20 por cento seguintes, etc.) e classificar a lista por o sobrenome dos alunos, seguido do primeiro nome. Uma solução é fornecida na seguinte lista
+
+```{r}
+
+# Possível solução do desafio de Girenciamento de Dados
+
+# 1) Criano um dataframe 
+
+options(digits = 2)
+
+Student <- c("John Davis", "Angela Williams", "Bullwinkle Moose",
+ "David Jones", "Janice Markhammer", "Cheryl Cushing",
+ "Reuven Ytzrhak", "Greg Knox", "Joel England",
+ "Mary Rayburn")
+
+Math <- c(502, 600, 412, 358, 495, 512, 410, 625, 573, 522)
+
+Science <- c(95, 99, 80, 82, 75, 85, 80, 95, 89, 86)
+
+English <- c(25, 22, 18, 15, 20, 28, 15, 30, 27, 18)
+
+roster <- data.frame(Student, Math, Science, English, stringsAsFactors=FALSE)
+
+# Obtenção de pontuações de desempenho 
+
+roster
+
+z <- scale(roster[, 2:4])
+z
+
+score <- apply(z, 1, mean)
+score
+
+roster <- cbind(roster, score)
+roster
+
+# Classificando os alunos por nota (score)
+
+y <- quantile(score, c(.8, .6, .4, .2))
+y
+
+roster$grade[score >= y[1]] <- "A"
+roster$grade[score < y[1] & score >= y[2]] <- "B"
+roster$grade[score < y[2] & score >= y[3]] <- "C"
+roster$grade[score < y[3] & score >= y[4]] <- "D"
+roster$grade[score < y[4]] <- "F"
+
+# Extração do sobrenome do nome do aluno 
+
+name <- strsplit((roster$Student), " ")
+name
+lastname <- sapply(name, "[", 2)
+lastname
+
+firstname <- sapply(name, "[", 1)
+firstname
+
+roster <- cbind(firstname, lastname, roster[, -1])
+
+roster <- roster[order(lastname, firstname), ]
+
+# O código é denso, então vamos percorrer a solução passo a passo:
+
+# Etapa 1. A lista de alunos original é fornecida. 
+
+# As opções (dígitos = 2) limitam o número de dígitos impressos após a casa decimal e torna as impressões mais fáceis de ler.
+
+options(digits=2)
+roster
+
+# Etapa 2. Como os testes de matemática, ciências e inglês são relatados em escalas diferentes (com médias e desvios padrão amplamente diferentes), você precisa torná-los comparáveis antes de combiná-los.
+
+# Uma maneira de fazer isso é padronizar as variáveis para que cada teste seja relatado em unidades de desvio padrão, em vez de em suas escalas originais. Você pode fazer isso com a função scale ():
+
+z <- scale(roster[,2:4])
+z
+
+
+# Etapa 3. Você pode obter uma pontuação de desempenho para cada aluno, calculando os meios de linha usando a função mean () e adicionando-a à lista usando a função cbind ():
+
+#Obs.: aplly => 1 (linha) e 2 (coluna)
+
+score  <- apply(z, 1, mean)
+roster <- cbind(roster, score)
+roster
+
+# Etapa 4. A função quantil( ) fornece a classificação percentual da pontuação de desempenho de cada aluno. Você vê que o corte para um A é 0,74, para um B é 0,44 e assim por diante.
+
+y <- quantile(roster$score, c(.8,.6,.4,.2))
+y
+
+# Etapa 5. Usando operadores lógicos, você pode recodificar as classificações percentuais dos alunos em um novo variável de grau categórico. Isso cria a nota variável no quadro de dados da escala de serviço.
+
+roster$grade[score >= y[1]] <- "A"
+roster$grade[score < y[1] & score >= y[2]] <- "B"
+roster$grade[score < y[2] & score >= y[3]] <- "C"
+roster$grade[score < y[3] & score >= y[4]] <- "D"
+roster$grade[score < y[4]] <- "F"
+roster
+
+# Etapa 6. Você usará a função strsplit () para dividir os nomes dos alunos em nome e sobrenome no caractere de espaço. Aplicar strsplit () a um vetor de strings retorna uma lista:
+
+name <- strsplit((roster$Student), " ")
+name
+
+# Etapa 7. Você pode usar a função sapply () para pegar o primeiro elemento de cada componente e colocá-lo em um vetor de primeiro nome, e o segundo elemento de cada componente e colocá-lo em um vetor de sobrenome. "[" é uma função que extrai parte de um objeto - aqui, o primeiro ou o segundo componente do nome da lista. Você usará cbind () para adicioná-los à lista. Como você não precisa mais da variável de aluno, você a descartará (com -1 no índice da lista).
+
+Firstname <- sapply(name, "[", 1)
+Lastname <- sapply(name, "[", 2)
+roster <- cbind(Firstname, Lastname, roster[,-1])
+roster
+
+# Etapa 8. Finalmente, você pode classificar o conjunto de dados por nome e sobrenome usando order () função:
+
+roster[order(Lastname,Firstname),] 
+
+```
+
+Existem muitas outras maneiras de realizar essas tarefas, mas este código ajuda a capturar o sabor dessas funções. Agora é hora de olhar para as estruturas de controle e funções escritas pelo usuário.
+
+# Controle de fluxo
+
+No curso normal dos eventos, as instruções em um programa R são executadas sequencialmente do início ao fim do programa. Mas há momentos em que você deseja executar algumas instruções repetidamente, enquanto executa outras instruções apenas se certas condições forem atendidas.
+
+É aqui que entram as construções de fluxo de controle. R tem as estruturas de controle padrão que você esperaria ver em uma linguagem de programação moderna. 
+
+Primeiro, você examinará as construções usadas para execução condicional, seguidas pelas construções usadas para loop.
+
+Para os exemplos de sintaxe ao longo desta seção, tenha em mente o seguinte: 
+
+1) instrução é uma única instrução R ou uma instrução composta (um grupo de instruções R entre chaves {} e separadas por ponto-e-vírgula).
+
+2) cond é uma expressão que pode ser verdadeira ou falsa. 
+
+3) expr é uma instrução avaliada em um número ou string de caracteres.
+
+4) seq é uma sequência de números ou cadeias de caracteres. 
+
+Depois de discutirmos as construções de fluxo de controle, você aprenderá como escrever suas funções.
+
+# Repetição e looping
+
+Construções de "loop" executam repetidamente uma instrução ou série de afirmações até que uma condição não seja verdadeira. Isso inclui as estruturas "for" (para) e "while" (enquanto). 
+
+```{r}
+
+# FOR
+
+O loop for executa uma instrução repetidamente até que o valor de uma variável não esteja mais contido na sequência seq. A sintaxe é:
+
+for (var in seq) statement 
+
+# Repetição do "Hello" dez vezes 
+
+for(i in 1:10) print ("Hello")
+
+# WHILE
+
+Um loop while executa uma instrução repetidamente até que a condição não seja mais verdadeira. A sintaxe é:
+
+while (cond) statement
+
+# Em um segundo exemplo, o código:
+
+i <- 10
+while (i > 0) {print("Hello"); i <- i - 1}
+
+#  mais uma vez imprime a palavra Hello 10 vezes. Certifique-se de que as declarações dentro dos colchetes modificam a condição while para que mais cedo ou mais tarde ela não seja mais verdadeira - caso contrário, o loop nunca terminará! No exemplo anterior, a declaração:
+
+i <- i - 1
+
+# subtrai 1 do objeto i em cada loop, de modo que após o décimo loop não seja maior do que 0. Se, em vez disso, você adicionar 1 em cada loop, R nunca para de dizer Olá. É por isso que os loops while podem ser mais perigosos do que outras construções de loop.
+
+# O loop em R pode ser ineficiente e demorado ao processar as linhas ou colunas de grandes conjuntos de dados. Sempre que possível, é melhor usar as funções numéricas e de caracteres incorporadas de R em conjunto com a família de funções de aplicação.
+
+```
+
+# Execução condicional
+
+Na execução condicional, uma instrução ou instruções são executadas apenas se uma condição especificada for atendida. Essas construções incluem:
+
+a) if-else
+b) ifelse
+c) switch
+
+# IF-ELSE
+
+A estrutura de controle "if-else" executa uma instrução se uma determinada condição for verdadeira. Opcionalmente, uma instrução diferente é executada se a condição for falsa.
+
+A sintaxe é: 
+
+if (cond) statement
+if (cond) statement1 else statement2
+
+Aqui estão alguns exemplos:
+
+if (is.character(grade)) grade <- as.factor(grade)
+
+if (!is.factor(grade)) grade <- as.factor(grade) else print("Grade already is a factor") 
+
+No primeiro caso, se a nota for um vetor de caracteres, ela é convertida em um fator.
+
+Na segunda instância, uma das duas instruções é executada. Se a nota não é um fator (observe o símbolo!), É transformado em um. Se for um fator, a mensagem será impressa.
+
+
+# IFELSE
+
+A construção ifelse é uma versão compacta e vetorizada da construção if-else. A sintaxe é
+
+ifelse(cond, statement1, statement2)
+
+A primeira instrução é executada se cond for TRUE. Se cond for FALSE, a segunda instrução será executada. A seguir, é apresentado um exemplo. 
+
+Use ifelse quando quiser tomar uma ação binária ou quando quiser inserir e enviar vetores da construção.
+
+
+```{r}
+
+# Exemplo do uso de ifelse 
+
+score <- 1
+
+ifelse(score > 0.5, print("Passed"), print("Failed"))
+
+outcome <- ifelse (score > 0.5, "Passed", "Failed")
+
+```
+
+# SWITCH
+
+switch escolhe instruções com base no valor de uma expressão. A sintaxe é:
+
+switch (expr, ...)
+
+onde ... representa declarações vinculadas aos valores de resultado possíveis de expr. 
+
+É mais facil para entender como a mudança funciona, olhando para o exemplo na lista a seguir.
+
+Este é um exemplo bobo, mas mostra os principais recursos. Você aprenderá a usar o switch em funções escritas pelo usuário na próxima seção.
+
+```{r}
+
+# Exemplo do uso da função switch 
+
+feelings <- c("sad", "afraid")
+for (i in feelings)
+  print(
+    switch(i,
+        happy = "I am glad you are happy",
+        afraid = "There is nothing to fear",
+        sad = "Cheer up",
+        angry = "Calm down now"
+       )
+     )
+
+```
+
+# Funções escritas pelo usuário
+
+Um dos maiores pontos fortes de R é a capacidade do usuário de adicionar funções. Na verdade, muitas das funções em R são funções de funções existentes. A estrutura de uma função é semelhante a esta:
+
+myfunction <- function(arg1, arg2, ... ){
+ statements
+ return(object)}
+ 
+ 
+Os objetos na função são locais para a função. O objeto retornado pode ser qualquer tipo de dados, de escalar a lista.
+
+Vamos dar uma olhada em um exemplo. Digamos que você gostaria de ter uma função que calcule a tendência central e a propagação dos objetos de dados. 
+
+A função deve permitir a escolha entre estatísticas paramétricas (média e desvio padrão) e não paramétricas (mediana e desvio absoluto da mediana).
+
+Os resultados devem ser retornados como uma lista nomeada. Além disso, o usuário deve ter a opção de imprimir os resultados automaticamente ou não. A menos que especificado de outra forma, o comportamento padrão da função deve ser calcular estatísticas paramétricas e não imprimir os resultados. Uma solução é fornecida na lista a seguir.
+
+```{r}
+
+# mystats (): uma função escrita pelo usuário para estatísticas resumidas
+
+mystats <- function(x, parametric=TRUE, print=FALSE){ 
+  if (parametric) { 
+      center <- mean(x); spread <- sd(x)
+  } else {
+      center <- median(x); spread <- mad(x)
+  }
+  if (print & parametric) {
+    cat("Mean=", center, "\n", "SD=", spread, "\n")
+  } else if (print & !parametric) {
+    cat("Median=", center, "\n", "MAD=", spread, "\n")
+  }
+  result <- list(center=center, spread=spread)
+  return(result)
+}
+
+# Para ver sua função em ação, primeiro gere alguns dados (uma amostra aleatória de tamanho 500 de uma distribuição normal):
+
+set.seed(1234)
+x <- rnorm(500)
+
+# Depois de executar a declaração
+
+y <- mystats(x)
+
+
+# y$ center conterá a média (0,00184) e y$ spread conterá o desvio padrão (1,03). Nenhuma saída é produzida. Se você executar a declaração: 
+
+y <- mystats(x, parametric=FALSE, print=TRUE)
+y
+
+# y$ center conterá a mediana (–0,0207) e y $ spread conterá o desvio absoluto da mediana (1,001). Além disso, a seguinte saída é produzida:
+
+Median= -0.02070734 
+MAD= 1.000984 
+
+```
+
+
+A seguir, vamos dar uma olhada em uma função escrita pelo usuário que usa a construção switch. Esta função dá ao usuário uma escolha em relação ao formato da data de hoje. Os valores atribuídos a parâmetros na declaração da função são considerados padrões. Na função mydate (), long é o formato padrão para datas se o tipo não for especificado:
+
+```{r}
+
+mydate <- function(type="long"){
+  switch(type, 
+     long = format(Sys.time(), "%A %B %d %Y"), 
+     short = format(Sys.time(), "%m-%d-%y"),
+     cat(type, "is not a recognized type\n")
+  )
+}
+                   
+# Aqui está a função em ação
+
+mydate ("long")
+mydate ("short")
+mydate ( )
+mydate ("medium")
+
+```
+
+Observe que a função cat() só é executada se o tipo inserido não corresponder a "long" ou "short". 
+
+Normalmente, é uma boa ideia ter uma expressão que capture os argumentos fornecidos pelo usuário que foram inseridos incorretamente. 
+
+Estão disponíveis várias funções que podem ajudar a adicionar interceptação e correção de erros às suas funções. 
+
+Você pode usar a função warning () para gerar uma mensagem de aviso, message () para gerar uma mensagem de diagnóstico e stop () para parar a execução da expressão atual e realizar uma ação de erro. 
+
+Consulte a ajuda online de cada função para obter mais detalhes.
+
+# DICA 
+
+Depois de começar a escrever funções de qualquer comprimento e complexidade, o acesso a boas ferramentas de depuração torna-se importante. R tem uma série de funções internas úteis para depuração e pacotes de contribuição do usuário estão disponíveis que fornecem funcionalidade adicional. 
+
+Um excelente recurso sobre este tópico é “Debugging in R” de Duncan Murdoch (http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR).
+
+Depois de criar suas próprias funções, você pode querer torná-las disponíveis em todas as sessões. 
+
+O Apêndice B descreve como personalizar o ambiente R para que as funções escritas pelo usuário sejam carregadas automaticamente na inicialização. Veremos exemplos adicionais de funções escritas pelo usuário nos capítulos 6 e 8. 
+
+Você pode realizar muitas coisas usando as técnicas básicas fornecidas nesta seção. Se você gostaria de explorar as sutilezas da escrita de funções, ou deseja escrever um código de nível profissional que você possa distribuir para outras pessoas, recomendo dois livros excelentes que você encontrará na seção Referências no final deste livro: Venables & Ripley (2000) e Chambers (2008). 
+
+Juntos, eles fornecem um nível significativo de detalhes e variedade de exemplos. Agora que cobrimos as funções escritas pelo usuário, encerraremos este capítulo com uma discussão sobre agregação e remodelagem de dados.
+
+# Agregação e reestruturação
+
+R fornece vários métodos poderosos para agregar e remodelar dados. Ao agregar dados, você substitui grupos de observações por estatísticas resumidas com base nessas observações.Ao remodelar os dados, você altera a estrutura (linhas e colunas) determinando como os dados são organizados.
+
+Esta seção descreve uma variedade de métodos para realizar essas tarefas. Nas próximas duas subseções, usaremos o quadro de dados mtcars incluído com a instalação básica de R. 
+
+Este conjunto de dados, extraído da revista Motor Trend (1974), descreve as características de design e desempenho (número de cilindros, deslocamento, potência, mpg e assim por diante) para 34 automóveis. Para saber mais sobre o conjunto de dados, consulte a help(mtcars).
+
+# 1, Transpor 
+
+A transposição (invertendo linhas e colunas) é talvez o método mais simples de remodelar um conjunto de dados. Use a função t () para transpor uma matriz ou um quadro de dados. No ultimo
+caso, os nomes das linhas tornam-se nomes de variáveis (colunas). Um exemplo é apresentado no próxima lista.
+
+```{r}
+
+# Transposição de um conjunto de dados
+
+cars <- mtcars[1:5, 1:4]
+cars
+
+t(cars)
+
+# A Listagem 5.9 usa um subconjunto do conjunto de dados mtcars para economizar espaço na página. Você verá uma maneira mais flexível de transpor os dados quando examinarmos o pacote de formas (shape) posteriormente nesta seção.
+
+```
+
+# Agregando dados
+
+É relativamente fácil recolher dados em R usando um ou mais por variáveis e uma função definida. O formato é:
+
+aggregate(x, by, FUN)
+
+onde x é o objeto de dados a ser recolhido, by é uma lista de variáveis que serão cruzadas para formar as novas observações e FUN é a função escalar usada para calcular estatísticas de resumo que irão compor os novos valores de observação.
+
+Como exemplo, vamos agregar os dados mtcars por número de cilindros e engrenagens, retornando médias em cada uma das variáveis numéricas (veja a próxima lista)
+
+
+```{r}
+
+# Exemplo de Agregação de dados 
+
+data("mtcars")
+options(digits=3)
+attach(mtcars)
+
+aggdata <- aggregate(mtcars, by=list(cyl,gear), FUN=mean, 
+                     na.rm=TRUE)
+aggdata
+
+```
+
+Nestes resultados, o Grupo.1 representa o número de cilindros (4, 6 ou 8) e o Grupo.2 representa o número de engrenagens (3, 4 ou 5). 
+
+Por exemplo, carros com 4 cilindros e 3 marchas têm uma média de 21,5 milhas por galão (mpg). Quando você está usando a função aggregate (), as variáveis by devem estar em uma lista (mesmo se houver apenas uma). 
+
+Você pode declarar um nome personalizado para os grupos de dentro da lista, por exemplo, usando by = list (Group.cyl = cyl, Group.gears = gear). A função especificada pode ser qualquer função interna ou fornecida pelo usuário. 
+
+Isso dá ao comando agregado uma grande quantidade de poder. Mas quando se trata de energia, nada supera o pacote de reformulação (reshape).
+
+# O pacote de reformulação (reshape)
+
+O pacote de reformulação ("reshape") é uma abordagem extremamente versátil para reestruturar e agregar conjuntos de dados. Por causa dessa versatilidade, pode ser um pouco desafiador aprender. Percorreremos o processo lentamente e usaremos um pequeno conjunto de dados para que fique claro o que está acontecendo. Como o "reshape" não está incluído na instalação padrão do R, você precisará instalá-lo uma vez, usando install.packages ("reshape").
+
+Basicamente, você "derreterá" os dados para que cada linha seja uma combinação única de ID-variável. Em seguida, você "moldará" os dados derretidos em qualquer forma que desejar. 
+
+Durante o elenco, você pode agregue os dados com qualquer função que desejar.
+O conjunto de dados com o qual você trabalhará é mostrado abaixo. 
+
+
+```{r}
+
+# Instalando package "reshape"
+
+install.packages ("reshape")
+library(reshape)
+
+ID <- c(1,1,2,2)
+Time <- c(1,2,1,2)
+X1 <- c(5,3,6,2)
+X2 <- c(6,5,1,4)
+
+mydata <- data.frame(ID, Time, X1, X2)
+mydata
+
+# MELTING (Derretendo)
+
+## Quando você derrete um conjunto de dados, você o reestrutura em um formato em que cada variável medida está em sua própria linha, junto com as variáveis de ID necessárias para identificá-la exclusivamente.
+
+md <- melt(mydata, id=(c("ID", "Time")))
+md
+
+# Agora que você tem seus dados fundidos, pode reformulá-los em qualquer forma, usando a função cast ().
+
+# CASTING (Elenco)
+
+A função cast () começa com dados fundidos e os remodela usando uma fórmula fornecida por você e uma função (opcional) usada para agregar os dados. O formato é:
+  
+newdata <- cast(md, formula, FUN)
+
+onde 'md' são os dados fundidos, a 'formula'descreve o resultado final desejado e 'FUN' é a função de agregação (opcional). A fórmula assume a forma: 
+  
+rowvar1 + rowvar2 + … ~ colvar1 + colvar2 + …
+
+Nesta fórmula, 'rowvar1 + rowvar2 +…' define o conjunto de variáveis cruzadas que definem as linhas, e 'colvar1 + colvar2 +…' define o conjunto de variáveis cruzadas que definem as colunas.
+
+# Exemplos usando Casting 
+
+# 1. Com agregação
+
+# 1.1. Exemplo // ID
+
+novo <- cast(md, ID~variable, mean)
+
+# 1.2 Exemplo // Tempo 
+
+novo1 <- cast(md, Time~variable, mean)
+
+# 1.3 Exemplo // ID e Tempo 
+
+novo2 <- cast(md, ID~Time, mean)
+
+
+# 2. Sem agregação 
+
+# 2.1 Exemplo // ID, Tempo e Variáveis
+
+novo3 <-  cast(md, ID+Time~variable)
+
+# 2.2 Exemplo // ID e variáveis
+
+novo4 <- cast(md, ID+variable~Time)
+
+# 2.3 Exemplo // ID, variáveis e time
+
+novo5 <- cast(md, ID~variable+Time)
+
+```
+
+# Conclusão 
+
+Este capítulo revisou dezenas de funções matemáticas, estatísticas e de probabilidade que são úteis para manipular dados. 
+
+Vimos como aplicar essas funções a uma ampla gama de objetos de dados, incluindo vetores, matrizes e quadros de dados. Aprendemos a usar construções de fluxo de controle para loop e ramificação para executar algumas instruções repetidamente e executar outras instruções apenas quando certas condições são atendidas. 
+
+Você então teve a chance de escrever suas próprias funções e aplicá-las aos dados. Por fim, exploramos maneiras de recolher, agregar e reestruturar seus dados. 
+
+Agora que você reuniu as ferramentas de que precisa para colocar seus dados em forma (sem trocadilhos), estamos prontos para dar adeus à parte 1 e entrar no mundo emocionante da análise de dados! 
+
+Nos próximos capítulos, começaremos a explorar os muitos métodos estatísticos e gráficos disponíveis para transformar dados em informações.
